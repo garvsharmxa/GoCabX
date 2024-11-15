@@ -1,0 +1,37 @@
+import 'package:buzzcab/onboradingScreen/onboardingFirst.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart'; // Import google_fonts
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // Define the primary color and color scheme to avoid repetition
+    final Color primaryColor = const Color(0xFFFF7A00);
+
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        textTheme: GoogleFonts.montserratTextTheme(), // Use Google Fonts
+        colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
+        useMaterial3: true,
+        brightness: Brightness.light, // Light mode
+      ),
+      darkTheme: ThemeData(
+        textTheme: GoogleFonts.montserratTextTheme(), // Use Google Fonts for dark theme
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: primaryColor,
+          brightness: Brightness.dark, // Dark mode
+        ),
+        useMaterial3: true,
+      ),
+      themeMode: ThemeMode.system,
+      home: const OnboardingFirst(),
+    );
+  }
+}
