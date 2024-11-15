@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'onboardingSecond.dart';
-import 'widget/onboardingTextFirst.dart'; // Import google_fonts
+import 'widget/onboardingTextFirst.dart';
 
-class OnboardingFirst extends StatelessWidget {
-  const OnboardingFirst({super.key});
+class Onboardingsecond extends StatelessWidget {
+  const Onboardingsecond({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final double maxContentWidth = MediaQuery.of(context).size.width * 0.8;
+        final double maxContentWidth = MediaQuery.of(context).size.width * 0.8;
     final double maxWidthConstraint = 400.0;
-
     return Scaffold(
       backgroundColor: Color(0xFFE6F5F3),
       body: Center(
@@ -50,7 +48,11 @@ class OnboardingFirst extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
               const SizedBox(height: 32),
-              Center(child: Image.asset('assets/images/Illustration.png')),
+              Center(
+  child: Image.asset('assets/images/Property1=Default.png'),
+  
+),
+
             ],
           ),
         ),
@@ -67,10 +69,7 @@ class OnboardingFirst extends StatelessWidget {
     borderRadius: BorderRadius.circular(8.0), // Optional: match button's shape
   ),
   child: ElevatedButton(
-    onPressed: () {
-      Navigator.push(context, 
-      MaterialPageRoute(builder: (context) =>Onboardingsecond()));
-    },
+    onPressed: () {},
     style: ElevatedButton.styleFrom(
       backgroundColor: Colors.transparent, // Make button background transparent
       shadowColor: Colors.transparent, // Remove shadow if desired
@@ -91,4 +90,3 @@ class OnboardingFirst extends StatelessWidget {
     );
   }
 }
-
