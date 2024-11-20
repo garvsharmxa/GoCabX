@@ -1,6 +1,8 @@
 import 'package:buzzcab/onboradingScreen/onboardingFirst.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart'; // Import google_fonts
+import 'package:google_fonts/google_fonts.dart';
+
+import 'app.dart'; // Import google_fonts
 
 void main() {
   runApp(const MyApp());
@@ -31,7 +33,30 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       themeMode: ThemeMode.system,
-      home: const OnboardingFirst(),
+      home:
+      //  OnboardingFirst(),
+       const App(),
     );
   }
 }
+
+
+
+// import 'package:flutter/material.dart';
+
+// import 'app.dart';
+
+// /// Entry point of Flutter App
+// Future<void> main() async {
+//   // Ensure that widgets are initialized
+//   WidgetsFlutterBinding.ensureInitialized();
+
+//   // Initialize GetX Local Storage
+
+//   // Remove # sign from url
+
+//   // Initialize Firebase & Authentication Repository
+
+//   // Main App Starts here...
+//   runApp(const App());
+// }
