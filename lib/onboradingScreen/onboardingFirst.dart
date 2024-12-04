@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-
-import 'onboardingSecond.dart';
-import 'widget/onboardingTextFirst.dart'; // Import google_fonts
+import 'package:lottie/lottie.dart';
+import '../features/home/widgets/bottomButton.dart';
+import 'user_rider_switch.dart';
+import 'widget/onboardingTextFirst.dart';
 
 class OnboardingFirst extends StatelessWidget {
   const OnboardingFirst({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final Color backgroundColor = Theme.of(context).brightness == Brightness.dark
+        ? const Color(0xFF121212) 
+        : const Color(0xFFE6F5F3); 
+
     final double maxContentWidth = MediaQuery.of(context).size.width * 0.8;
     final double maxWidthConstraint = 400.0;
 
     return Scaffold(
-      backgroundColor: Color(0xFFE6F5F3),
+      backgroundColor: backgroundColor,
       body: Center(
         child: ConstrainedBox(
           constraints: BoxConstraints(
@@ -23,18 +27,16 @@ class OnboardingFirst extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: 150.0,
+                width: double.infinity,
                 height: 150.0,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Color(0xFF25B29F),
                   shape: BoxShape.circle,
                 ),
                 child: Center(
-                  child: Image.asset(
-                    'assets/images/onboradinglogo1.png',
-                    width: 80.0,
-                    height: 80.0,
-                  ),
+                  child: Image.asset('assets/logos/applogo.png',
+                  height: 20,width: 20,),
+                  
                 ),
               ),
               const SizedBox(height: 32),
@@ -45,50 +47,31 @@ class OnboardingFirst extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               const OnboardingText(
-                text: "Buzz Cab !",
+                text: "BuzzCab!",
                 fontSize: 28.0,
                 fontWeight: FontWeight.bold,
               ),
               const SizedBox(height: 32),
-              Center(child: Image.asset('assets/images/Illustration.png')),
+              Center(
+                child: Lottie.asset(
+                  'assets/images/animations/Intro_Screen_animation-BuzzCab.json',
+                  width: double.infinity,
+                  height: 400.0,
+                ),
+              ),
             ],
           ),
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Container(
-  decoration: BoxDecoration(
-    gradient: LinearGradient(
-      colors: [Color(0xFF211F96), Color(0xFF1F9686)], // Start and end colors
-      begin: Alignment.centerLeft,
-      end: Alignment.centerRight,
-    ),
-    borderRadius: BorderRadius.circular(8.0), // Optional: match button's shape
-  ),
-  child: ElevatedButton(
-    onPressed: () {
-      Navigator.push(context, 
-      MaterialPageRoute(builder: (context) =>Onboardingsecond()));
-    },
-    style: ElevatedButton.styleFrom(
-      backgroundColor: Colors.transparent, // Make button background transparent
-      shadowColor: Colors.transparent, // Remove shadow if desired
-      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
-      textStyle: GoogleFonts.montserrat(
-        fontSize: 18.0,
-        fontWeight: FontWeight.bold,
-      ),
-    ),
-    child: const Text("Get Started",
-    style: TextStyle(
-      color: Colors.white
-    ),),
-  ),
-)
-
+      bottomNavigationBar: GradientButtonBar(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ChoosePathScreen()),
+          );
+        },
+        buttonText: "Get Started",
       ),
     );
   }
 }
-

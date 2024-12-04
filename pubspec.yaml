@@ -22,6 +22,7 @@ dependencies:
   data_table_2: ^2.5.15
   cached_network_image: ^3.4.1
   shimmer: ^3.0.0
+  flutter_svg: ^2.0.15
 
 dev_dependencies:
   flutter_test:
@@ -38,5 +39,6 @@ flutter:
     - assets/images/content/
     - assets/images/animations/
     - assets/icons/payment_methods/
+    - assets/icons/homepage/    
 
  
