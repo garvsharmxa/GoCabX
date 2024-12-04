@@ -7,21 +7,30 @@ class OnboardingText extends StatelessWidget {
   final FontWeight fontWeight;
 
   const OnboardingText({
-    super.key,
+    Key? key,
     required this.text,
-    this.fontSize = 16.0,
-    this.fontWeight = FontWeight.normal,
-  });
+    required this.fontSize,
+    required this.fontWeight,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final bool isSmallScreen = screenWidth < 360.0;
+    final double adjustedFontSize = isSmallScreen ? fontSize * 0.85 : fontSize; 
+
+    final Color textColor = Theme.of(context).brightness == Brightness.dark
+        ? Colors.white 
+        : Colors.black; 
+
     return Text(
       text,
-      style: GoogleFonts.montserrat(
-        fontSize: fontSize,
+      style: GoogleFonts.poppins(
+        fontSize: adjustedFontSize,
         fontWeight: fontWeight,
-        color: Theme.of(context).colorScheme.onBackground,
+        color: textColor,
       ),
+      textAlign: TextAlign.center,
     );
   }
 }

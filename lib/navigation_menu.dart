@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:iconsax/iconsax.dart';
-
 
 import 'features/explore/screens/ExploreScreen.dart';
 import 'features/history/screens/HistoryScreen.dart';
 import 'features/home/screen/HomeScreen.dart';
-import 'features/screens/forms/form.dart';
-import 'features/screens/my machine/myMachine.dart';
+import 'features/profile/screens/profileScreen.dart';
 import 'features/tools/screens/MyMachine.dart';
 
 class NavigationMenu extends StatelessWidget {
@@ -18,209 +15,128 @@ class NavigationMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(NavigationController());
     return Scaffold(
-      bottomNavigationBar: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          Obx(
-            () => NavigationBar(
-              backgroundColor: Colors.white,
-              indicatorColor: Colors.transparent,
-              height: 70,
-              elevation: 0,
-              selectedIndex: controller.selectedIndex.value,
-              onDestinationSelected: (index) {
-                if (index >= 2) {
-                  controller.selectedIndex.value = index - 1;
-                } else {
-                  controller.selectedIndex.value = index;
-                }
-              },
-              destinations: [
-                NavigationDestination(
-                  icon: Icon(
-                    Iconsax.home,
-                    color: controller.selectedIndex.value == 0
-                        ? Colors.orange
-                        : Colors.black,
-                  ),
-                  label: 'Home',
-                ),
-                NavigationDestination(
-                  icon: Icon(
-                    Iconsax.shop,
-                    color: controller.selectedIndex.value == 1
-                        ? Colors.orange
-                        : Colors.black,
-                  ),
-                  label: 'Explore',
-                ),
-                const SizedBox(width: 64), // Spacing for the center button
-                NavigationDestination(
-                  icon: Icon(
-                    Iconsax.user,
-                    color: controller.selectedIndex.value == 2
-                        ? Colors.orange
-                        : Colors.black,
-                  ),
-                  label: 'Tools',
-                ),
-                NavigationDestination(
-                  icon: Icon(
-                    Iconsax.heart,
-                    color: controller.selectedIndex.value == 3
-                        ? Colors.orange
-                        : Colors.black,
-                  ),
-                  label: 'History',
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            bottom: 10,
-            child: GestureDetector(
-              onTap: () {
-                showModalBottomSheet(
-                  showDragHandle: false,
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 10.0),
-                            child: Row(
-                              children: [
-                                Text(
-                                  'What do you want to post?',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineMedium,
-                                ),
-                                Spacer(),
-                                IconButton(
-                                  onPressed: () {
-                                    // Re-direct to Whatsapp.
-                                  },
-                                  icon: Image.asset(
-                                    "assets/logos/whatsapp.png",
-                                    height: 32,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          const Divider(),
-                          Obx(() => SizedBox(
-                                height: 40,
-                                child: CheckboxListTile(
-                                  activeColor: Colors.orange,
-                                  title: Text(
-                                    'Seek request from borrower',
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium,
-                                  ),
-                                  value: controller.selectedOption.value == 0,
-                                  onChanged: (bool? value) {
-                                    controller.selectedOption.value =
-                                        value == true ? 0 : -1;
-                                  },
-                                ),
-                              )),
-                          Obx(() => SizedBox(
-                                height: 40,
-                                child: CheckboxListTile(
-                                  activeColor: Colors.orange,
-                                  title: Text(
-                                    'Get request from renters',
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium,
-                                  ),
-                                  value: controller.selectedOption.value == 1,
-                                  onChanged: (bool? value) {
-                                    controller.selectedOption.value =
-                                        value == true ? 1 : -1;
-                                  },
-                                ),
-                              )),
-                          Obx(() => SizedBox(
-                                height: 40,
-                                child: CheckboxListTile(
-                                  activeColor: Colors.orange,
-                                  title: Text(
-                                    'My Machine',
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium,
-                                  ),
-                                  value: controller.selectedOption.value == 2,
-                                  onChanged: (bool? value) {
-                                    controller.selectedOption.value =
-                                        value == true ? 2 : -1;
-                                  },
-                                ),
-                              )),
-                          const SizedBox(height: 20),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.pop(context); // Close the bottom sheet
-                              if (controller.selectedOption.value == 0) {
-                                Get.to(() => const FormWidget());
-                              } else if (controller.selectedOption.value == 1) {
-                                Get.to(() => const FormWidget());
-                              } else if (controller.selectedOption.value == 2) {
-                                Get.to(() => const Mymachine());
-                              }
-                            },
-                            child: Container(
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: Colors.orange,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: const Center(
-                                child: Text(
-                                  "Create",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    );
-                  },
-                );
-              },
-              child: Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Colors.orange,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: const Icon(
-                  Icons.add,
-                  color: Colors.white,
-                  size: 32,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
       body: Obx(
-        () => controller.screens[controller.selectedIndex.value],
+        () => IndexedStack(
+          index: controller.selectedIndex.value,
+          children: controller.screens,
+        ),
+      ),
+      bottomNavigationBar: Obx(
+        () => ClipRRect(
+          borderRadius: BorderRadius.only(
+            
+            topLeft: Radius.circular(22.0),
+            topRight: Radius.circular(22.0)
+          ),
+          child: BottomNavigationBar(
+          
+            currentIndex: controller.selectedIndex.value,
+            onTap: (index) {
+              if (index == 2) {
+                controller.selectedIndex.value = index;
+                
+               
+              } else {
+                controller.selectedIndex.value = index;
+              }
+            },
+            type: BottomNavigationBarType.fixed,
+            
+            selectedItemColor: Theme.of(context).brightness == Brightness.dark
+                ? Colors.white
+                : Colors.black,
+            unselectedItemColor: Theme.of(context).brightness == Brightness.dark
+                ? Colors.grey.shade400
+                : Colors.grey,
+            backgroundColor: Theme.of(context).brightness == Brightness.dark
+                ? Colors.black
+                : const Color(0xFFE6E6E6),
+            showSelectedLabels: true,
+            showUnselectedLabels: true,
+            
+            items: [
+              BottomNavigationBarItem(
+                icon: _buildIconWithBackground(
+                  'assets/icons/homepage/home-variant-outline.svg',
+                  controller.selectedIndex.value == 0,
+                  context,
+                ),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: _buildIconWithBackground(
+                  'assets/icons/homepage/history.svg',
+                  controller.selectedIndex.value == 1,
+                  context,
+                ),
+                label: 'History',
+              ),
+              BottomNavigationBarItem(
+                icon: _buildCenterButton(context),
+                label: '',
+              ),
+              BottomNavigationBarItem(
+                icon: _buildIconWithBackground(
+                  'assets/icons/homepage/cog-outline.svg',
+                  controller.selectedIndex.value == 3,
+                  context,
+                ),
+                label: 'Settings',
+              ),
+              BottomNavigationBarItem(
+                icon: _buildIconWithBackground(
+                  'assets/icons/homepage/account-circle-outline.svg',
+                  controller.selectedIndex.value == 4,
+                  context,
+                ),
+                label: 'Profile',
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildIconWithBackground(String assetPath, bool isSelected, BuildContext context) {
+    return Container(
+      decoration: isSelected
+          ? BoxDecoration(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
+              shape: BoxShape.circle,
+            )
+          : null,
+      padding: const EdgeInsets.all(8.0),
+      child: SvgPicture.asset(
+        assetPath,
+        color: isSelected
+            ? Theme.of(context).brightness == Brightness.dark
+                ? Colors.black
+                : Colors.white
+            : Theme.of(context).brightness == Brightness.dark
+                ? Colors.white
+                : Colors.black,
+      ),
+    );
+  }
+
+  Widget _buildCenterButton(BuildContext context) {
+    return Container(
+      width: 50,
+      height: 50,
+      decoration: BoxDecoration(
+        color: Color(0xFFD4D4D4)
+,
+        shape: BoxShape.circle,
+       
+      ),
+      child: Center(
+        child: SvgPicture.asset(
+          'assets/icons/homepage/map-marker-distance.svg',
+          // color: Colors.white,
+        ),
       ),
     );
   }
@@ -228,17 +144,12 @@ class NavigationMenu extends StatelessWidget {
 
 class NavigationController extends GetxController {
   Rx<int> selectedIndex = 0.obs;
-  Rx<int> selectedOption = (-1).obs;
 
   final screens = [
     const HomeScreen(),
     const ExploreScreen(),
-    // ProfileScreen(),
-    MyMachineScreen(),
-    // Container(color: Colors.green),
-    const HistoryScreen(),
-    // Container(color: Colors.deepPurple),
-    // Container(color: Colors.lightGreenAccent),
-    // Container(color: Colors.lightBlue),
+    const HistoryScreen(), // Assign index 2 to HistoryScreen for IndexedStack
+    const MyMachineScreen(),
+     ProfileScreen(),
   ];
 }

@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         textTheme: GoogleFonts.montserratTextTheme(), // Use Google Fonts
         colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
@@ -42,21 +43,3 @@ class MyApp extends StatelessWidget {
 
 
 
-// import 'package:flutter/material.dart';
-
-// import 'app.dart';
-
-// /// Entry point of Flutter App
-// Future<void> main() async {
-//   // Ensure that widgets are initialized
-//   WidgetsFlutterBinding.ensureInitialized();
-
-//   // Initialize GetX Local Storage
-
-//   // Remove # sign from url
-
-//   // Initialize Firebase & Authentication Repository
-
-//   // Main App Starts here...
-//   runApp(const App());
-// }
