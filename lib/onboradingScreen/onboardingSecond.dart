@@ -89,12 +89,13 @@ class OnboardingSecond extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => ChoosePathScreen()),
                   );
                 },
-                buttonText: "Next",
+                buttonText: "Next", fontsize: 18,
               ),
             ),
             const SizedBox(width: 16), // Add spacing between buttons
             Expanded(
               child: GradientButtonBar(
+                fontsize: 18,
                 onPressed: () {
                   Navigator.push(
                     context,

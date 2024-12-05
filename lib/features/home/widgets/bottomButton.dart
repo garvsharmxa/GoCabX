@@ -4,11 +4,12 @@ import 'package:google_fonts/google_fonts.dart';
 class GradientButtonBar extends StatelessWidget {
   final VoidCallback onPressed;
   final String buttonText;
+  final double fontsize;
 
   const GradientButtonBar({
     Key? key,
     required this.onPressed,
-    required this.buttonText,
+    required this.buttonText, required this.fontsize,
   }) : super(key: key);
 
   @override
@@ -40,7 +41,7 @@ class GradientButtonBar extends StatelessWidget {
             child: Text(
               buttonText,
               style: GoogleFonts.montserrat(
-                fontSize: 18.0,
+                fontSize: fontsize,
                 fontWeight: FontWeight.bold,
                 color: isDarkMode ? Colors.grey[200] : Colors.white,
               ),

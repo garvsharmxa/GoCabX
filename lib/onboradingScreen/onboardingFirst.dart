@@ -65,7 +65,7 @@ class OnboardingFirst extends StatelessWidget {
               MaterialPageRoute(builder: (context) => const ChoosePathScreen()),
             );
           },
-          buttonText: "Get Started",
+          buttonText: "Get Started", fontsize: 18,
         ),
       ),
     );
