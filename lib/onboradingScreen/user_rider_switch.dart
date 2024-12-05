@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
+import 'package:flutter_svg/svg.dart';
 import '../common/widgets/button/actionButton.dart';
 import 'onboardingSecond.dart';
 
@@ -20,13 +20,14 @@ class ChoosePathScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CircleAvatar(
-                radius: 30,
-                backgroundColor: const Color(0xFF25B29F),
-                child: Image.asset(
-                  'assets/logos/applogo.png',
-                  height: 40,
-                  width: 40,
-                )),
+              radius: 30,
+              backgroundColor: const Color(0xFF25B29F),
+              child: Image.asset(
+                'assets/logos/applogo.png',
+                height: 40,
+                width: 40,
+              ),
+            ),
             const SizedBox(height: 8.0),
             const Text.rich(
               TextSpan(
@@ -59,7 +60,7 @@ class ChoosePathScreen extends StatelessWidget {
                 color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
               ),
             ),
-             SizedBox(height: size.height /12),
+            SizedBox(height: size.height / 12),
 
             // Choose your path text
             Text(
@@ -97,12 +98,15 @@ class ChoosePathScreen extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: size.height /15),
+            SizedBox(height: size.height / 15),
+
+            // SVG based on theme
             Padding(
               padding: const EdgeInsets.all(10),
-              child: Image.asset(
-                'assets/images/content/choosepath.png',
-                fit: BoxFit.cover,
+              child: SvgPicture.asset(
+                isDarkMode
+                    ? "assets/images/content/Group 51.svg" // Dark mode SVG
+                    : "assets/images/content/Group 51 White.svg", // Light mode SVG
               ),
             ),
           ],

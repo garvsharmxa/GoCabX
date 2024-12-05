@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import '../features/home/widgets/bottomButton.dart';
 import '../features/signup/signup.dart';
-import 'widget/onboardingTextFirst.dart';
 
 class OnboardingThird extends StatelessWidget {
   const OnboardingThird({super.key});
@@ -74,6 +73,7 @@ class OnboardingThird extends StatelessWidget {
         child: SizedBox(
           width: double.infinity,
           child: GradientButtonBar(
+            fontsize: 18,
             onPressed: () {
               Navigator.push(
                 context,
