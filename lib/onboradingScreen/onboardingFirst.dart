@@ -9,68 +9,64 @@ class OnboardingFirst extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color backgroundColor = Theme.of(context).brightness == Brightness.dark
-        ? const Color(0xFF121212) 
-        : const Color(0xFFE6F5F3); 
-
-    final double maxContentWidth = MediaQuery.of(context).size.width * 0.8;
-    final double maxWidthConstraint = 400.0;
-
+    final Color backgroundColor =
+        Theme.of(context).brightness == Brightness.dark
+            ? const Color(0xFF121212)
+            : const Color(0xFFE6F5F3);
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: backgroundColor,
-      body: Center(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: maxWidthConstraint < maxContentWidth ? maxWidthConstraint : maxContentWidth,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: double.infinity,
+            height: 150.0,
+            decoration: const BoxDecoration(
+              color: Color(0xFF25B29F),
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Image.asset(
+                'assets/logos/applogo.png',
+                height: 20,
+                width: 20,
+              ),
+            ),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: double.infinity,
-                height: 150.0,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF25B29F),
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Image.asset('assets/logos/applogo.png',
-                  height: 20,width: 20,),
-                  
-                ),
-              ),
-              const SizedBox(height: 32),
-              const OnboardingText(
-                text: "Welcome To",
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
-              ),
-              const SizedBox(height: 8),
-              const OnboardingText(
-                text: "BuzzCab!",
-                fontSize: 28.0,
-                fontWeight: FontWeight.bold,
-              ),
-              const SizedBox(height: 32),
-              Center(
-                child: Lottie.asset(
-                  'assets/images/animations/Intro_Screen_animation-BuzzCab.json',
-                  width: double.infinity,
-                  height: 400.0,
-                ),
-              ),
-            ],
+          const SizedBox(height: 32),
+          const OnboardingText(
+            text: "Welcome To",
+            fontSize: 30.0,
+            fontWeight: FontWeight.w600,
           ),
-        ),
+          const SizedBox(height: 8),
+          const OnboardingText(
+            text: "BuzzCabs!",
+            fontSize: 35.0,
+            fontWeight: FontWeight.bold,
+          ),
+          const SizedBox(height: 32),
+          Center(
+            child: Lottie.asset(
+              'assets/images/animations/Intro_Screen_animation-BuzzCab.json',
+              width: double.infinity,
+              height: 200.0,
+            ),
+          ),
+        ],
       ),
-      bottomNavigationBar: GradientButtonBar(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const ChoosePathScreen()),
-          );
-        },
-        buttonText: "Get Started",
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(left: 12,right: 12,bottom: 8),
+        child: GradientButtonBar(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ChoosePathScreen()),
+            );
+          },
+          buttonText: "Get Started",
+        ),
       ),
     );
   }

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import 'features/authentication/signup/signup.dart';
 import 'navigation_menu.dart';
 import 'onboradingScreen/onboardingFirst.dart';
 import 'utils/constants/colors.dart';

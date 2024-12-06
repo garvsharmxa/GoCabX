@@ -1,75 +1,86 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import '../features/authentication/login/screens/enterMobileNumber.dart';
 import '../features/home/widgets/bottomButton.dart';
-import '../features/signup/signup.dart';
-import 'widget/onboardingTextFirst.dart';
+
 
 class OnboardingThird extends StatelessWidget {
   const OnboardingThird({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final double maxContentWidth = MediaQuery.of(context).size.width * 0.8;
-    final double maxWidthConstraint = 400.0;
+    final double maxContentWidth = MediaQuery.of(context).size.width * 0.85;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFE6F5F3),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: maxWidthConstraint < maxContentWidth ? maxWidthConstraint : maxContentWidth,
-          ),
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? Colors.black
+          : const Color(0xFFE6F5F3),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                width: double.infinity,
-                height:50.0,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF25B29F),
-                  shape: BoxShape.circle,
+              const SizedBox(height: 24),
+              CircleAvatar(
+                radius: 28,
+                backgroundColor: const Color(0xFF25B29F),
+                child: Image.asset(
+                  'assets/logos/applogo.png',
+                  height: 40,
+                  width: 40,
                 ),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                "Track Your Ride",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 28.0,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black,
+                ),
+              ),
+              const SizedBox(height: 12),
+               Text(
+                "Real-time updates at your fingertips.",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Expanded(
                 child: Center(
                   child: Lottie.asset(
-                    'assets/images/animations/New_Loading_Car_GIF.json',
-                    width: 60.0,
-                    height: 60.0,
+                    'assets/images/animations/Splash-2Animation-Buzzcab.json',
+                    width: maxContentWidth,
                     fit: BoxFit.contain,
                   ),
-                ),
-              ),
-              const SizedBox(height: 32),
-              const OnboardingText(
-                text: "Track Your Ride",
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
-              ),
-              const SizedBox(height: 8),
-              const OnboardingText(
-                text: "Real-time updates at your fingertips.",
-                fontSize: 28.0,
-                fontWeight: FontWeight.bold,
-              ),
-           
-              Center(
-                child: Lottie.asset(
-                  'assets/images/animations/Splash-1Animation-Buzzcab.json',
-                  width: double.infinity,
-                  height: 400.0,
                 ),
               ),
             ],
           ),
         ),
       ),
-      bottomNavigationBar: GradientButtonBar(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) =>const  EnterMobileScreen()),
-          );
-        },
-        buttonText: "Get Started",
+      bottomNavigationBar: Padding(
+       padding: const EdgeInsets.only(left: 12,right: 12,bottom: 8),
+        child: GradientButtonBar(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const EnterMobileScreen()),
+            );
+          },
+          buttonText: "Get Started",
+        ),
       ),
     );
   }

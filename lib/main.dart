@@ -14,13 +14,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Define the primary color and color scheme to avoid repetition
-    final Color primaryColor = const Color(0xFFFF7A00);
+    final Color primaryColor = const Color(0xFF1F9686);
+    final Color secondaryColor = const Color(0xFF211F96); // Secondary color
 
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         textTheme: GoogleFonts.montserratTextTheme(), // Use Google Fonts
-        colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: primaryColor,
+          secondary: secondaryColor, // Define secondary color
+        ),
         useMaterial3: true,
         brightness: Brightness.light, // Light mode
       ),
@@ -28,35 +33,13 @@ class MyApp extends StatelessWidget {
         textTheme: GoogleFonts.montserratTextTheme(), // Use Google Fonts for dark theme
         colorScheme: ColorScheme.fromSeed(
           seedColor: primaryColor,
+          secondary: secondaryColor, // Define secondary color for dark mode
           brightness: Brightness.dark, // Dark mode
         ),
         useMaterial3: true,
       ),
       themeMode: ThemeMode.system,
-      home:
-      //  OnboardingFirst(),
-       const App(),
+      home: const App(),
     );
   }
 }
-
-
-
-// import 'package:flutter/material.dart';
-
-// import 'app.dart';
-
-// /// Entry point of Flutter App
-// Future<void> main() async {
-//   // Ensure that widgets are initialized
-//   WidgetsFlutterBinding.ensureInitialized();
-
-//   // Initialize GetX Local Storage
-
-//   // Remove # sign from url
-
-//   // Initialize Firebase & Authentication Repository
-
-//   // Main App Starts here...
-//   runApp(const App());
-// }

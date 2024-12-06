@@ -1,8 +1,9 @@
+
 import 'package:buzzcab/onboradingScreen/onboardinThird.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import '../features/authentication/login/screens/enterMobileNumber.dart';
 import '../features/home/widgets/bottomButton.dart';
-import 'user_rider_switch.dart';
 import 'widget/onboardingTextFirst.dart';
 
 class OnboardingSecond extends StatelessWidget {
@@ -10,81 +11,102 @@ class OnboardingSecond extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double maxContentWidth = MediaQuery.of(context).size.width * 0.8;
-    final double maxWidthConstraint = 400.0;
+    final Color textColor = Theme.of(context).brightness == Brightness.dark
+        ? Colors.white
+        : Colors.black;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFE6F5F3),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: maxWidthConstraint < maxContentWidth ? maxWidthConstraint : maxContentWidth,
-          ),
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? Colors.black // Dark theme background color
+          : const Color(0xFFE6F5F3), // Light theme background color
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                width: double.infinity,
-                height: 50.0,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF25B29F),
-                  shape: BoxShape.circle,
+              const SizedBox(height: 16),
+              CircleAvatar(
+                  radius: 30,
+                  backgroundColor: const Color(0xFF25B29F),
+                  child: Image.asset(
+                    'assets/logos/applogo.png',
+                    height: 40,
+                    width: 40,
+                  )),
+              const SizedBox(height: 24),
+              Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: 'RIDE WITH',
+                      style: TextStyle(
+                        fontSize: 26.0,
+                        fontWeight: FontWeight.bold,
+                        color: textColor,
+                      ),
+                    ),
+                    const TextSpan(
+                      text: ' BUZZCABS!',
+                      style: TextStyle(
+                        fontSize: 26.0,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xffFF5722),
+                      ),
+                    ),
+                  ],
                 ),
-                child: Center(
-                  child: Lottie.asset(
-                    'assets/images/animations/New_Loading_Car_GIF.json',
-                    width: 40.0,
-                    height: 40.0,
-                    fit: BoxFit.contain,
-                  ),
-                ),
+                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 32),
-              const OnboardingText(
-                text: "Ride with BUZZCABS!",
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
-              ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 12),
               const OnboardingText(
                 text: "Ride with Ease!",
-                fontSize: 28.0,
-                fontWeight: FontWeight.bold,
+                fontSize: 20.0,
+                fontWeight: FontWeight.w500,
               ),
-              const SizedBox(height: 32),
-              Center(
-                child: Lottie.asset(
-                  'assets/images/animations/Splash-1Animation-Buzzcab.json',
-                  width: double.infinity,
-                  height: 400.0,
+              Expanded(
+                child: Center(
+                  child: Lottie.asset(
+                    'assets/images/animations/Splash-1Animation-Buzzcab.json',
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ],
           ),
         ),
       ),
-      bottomNavigationBar: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          GradientButtonBar(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ChoosePathScreen()),
-              );
-            },
-            buttonText: "Next",
-          ),
-          GradientButtonBar(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => OnboardingThird()),
-              );
-            },
-            buttonText: "SKIP",
-          ),
-        ],
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: GradientButtonBar(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const OnboardingThird()),
+                  );
+                },
+                buttonText: "Next",
+              ),
+            ),
+            const SizedBox(width: 16), // Add spacing between buttons
+            Expanded(
+              child: GradientButtonBar(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const EnterMobileScreen()),
+                  );
+                },
+                buttonText: "SKIP",
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
