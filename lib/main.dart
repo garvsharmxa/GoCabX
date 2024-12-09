@@ -1,7 +1,5 @@
-import 'package:buzzcab/onboradingScreen/onboardingFirst.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'app.dart'; // Import google_fonts
 
 void main() {
@@ -19,7 +17,6 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         textTheme: GoogleFonts.montserratTextTheme(), // Use Google Fonts
         colorScheme: ColorScheme.fromSeed(
@@ -30,7 +27,8 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light, // Light mode
       ),
       darkTheme: ThemeData(
-        textTheme: GoogleFonts.montserratTextTheme(), // Use Google Fonts for dark theme
+        textTheme: GoogleFonts
+            .montserratTextTheme(), // Use Google Fonts for dark theme
         colorScheme: ColorScheme.fromSeed(
           seedColor: primaryColor,
           secondary: secondaryColor, // Define secondary color for dark mode
