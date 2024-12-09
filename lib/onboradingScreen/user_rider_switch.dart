@@ -90,7 +90,7 @@ class ChoosePathScreen extends StatelessWidget {
                   isDarkMode: isDarkMode,
                 ),
                 ActionCard(
-                  title: 'Drive as Roadie',
+                  title: 'Drive as Roadie  ',
                   icon: Icons.attractions,
                   onTap: () {
                     Navigator.push(context,
