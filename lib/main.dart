@@ -26,7 +26,8 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light, // Light mode
       ),
       darkTheme: ThemeData(
-        textTheme: GoogleFonts.montserratTextTheme(), // Use Google Fonts for dark theme
+        textTheme: GoogleFonts
+            .montserratTextTheme(), // Use Google Fonts for dark theme
         colorScheme: ColorScheme.fromSeed(
           seedColor: primaryColor,
           brightness: Brightness.dark, // Dark mode
@@ -35,11 +36,8 @@ class MyApp extends StatelessWidget {
       ),
       themeMode: ThemeMode.system,
       home:
-      //  OnboardingFirst(),
-       const App(),
+          //  OnboardingFirst(),
+          const App(),
     );
   }
 }
-
-
-

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import '../features/home/widgets/bottomButton.dart';
-import '../features/signup/signup.dart';
-import 'widget/onboardingTextFirst.dart';
+import '../../features/home/widgets/bottomButton.dart';
+import '../../features/signup/signup.dart';
+import '../widget/onboardingTextFirst.dart';
 
 class OnboardingThird extends StatelessWidget {
   const OnboardingThird({super.key});
@@ -44,7 +44,7 @@ class OnboardingThird extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12),
-               Text(
+              Text(
                 "Real-time updates at your fingertips.",
                 textAlign: TextAlign.center,
                 style: TextStyle(

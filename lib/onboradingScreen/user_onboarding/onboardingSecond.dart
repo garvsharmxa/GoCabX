@@ -1,9 +1,9 @@
-import 'package:buzzcab/onboradingScreen/onboardinThird.dart';
+import 'package:buzzcab/onboradingScreen/user_onboarding/onboardinThird.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import '../features/home/widgets/bottomButton.dart';
-import 'user_rider_switch.dart';
-import 'widget/onboardingTextFirst.dart';
+import '../../features/home/widgets/bottomButton.dart';
+import '../user_rider_switch.dart';
+import '../widget/onboardingTextFirst.dart';
 
 class OnboardingSecond extends StatelessWidget {
   const OnboardingSecond({super.key});

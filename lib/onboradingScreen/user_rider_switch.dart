@@ -1,7 +1,8 @@
+import 'package:buzzcab/onboradingScreen/rider_onboarding/riderOnboardingFirst.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import '../common/widgets/button/actionButton.dart';
-import 'onboardingSecond.dart';
+import 'user_onboarding/onboardingSecond.dart';
 
 class ChoosePathScreen extends StatelessWidget {
   const ChoosePathScreen({super.key});
@@ -59,7 +60,7 @@ class ChoosePathScreen extends StatelessWidget {
                 color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
               ),
             ),
-             SizedBox(height: size.height /12),
+            SizedBox(height: size.height / 12),
 
             // Choose your path text
             Text(
@@ -92,12 +93,19 @@ class ChoosePathScreen extends StatelessWidget {
                 ActionCard(
                   title: 'Drive as Roadie',
                   icon: Icons.attractions,
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const RiderOnboardingFirst(),
+                      ),
+                    );
+                  },
                   isDarkMode: isDarkMode,
                 ),
               ],
             ),
-            SizedBox(height: size.height /15),
+            SizedBox(height: size.height / 15),
             Padding(
               padding: const EdgeInsets.all(10),
               child: Image.asset(
