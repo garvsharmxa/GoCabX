@@ -1,6 +1,5 @@
 import 'package:buzzcab/onboradingScreen/rider_onboarding/riderOnboardingFirst.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import '../common/widgets/button/actionButton.dart';
 import 'user_onboarding/onboardingSecond.dart';
 
@@ -91,7 +90,7 @@ class ChoosePathScreen extends StatelessWidget {
                   isDarkMode: isDarkMode,
                 ),
                 ActionCard(
-                  title: 'Drive as Roadie',
+                  title: 'Drive as Roadie  ',
                   icon: Icons.attractions,
                   onTap: () {
                     Navigator.push(

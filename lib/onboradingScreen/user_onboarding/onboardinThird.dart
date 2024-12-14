@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import '../../features/authentication/login/screens/enterMobileNumber.dart';
 import '../../features/home/widgets/bottomButton.dart';
-import '../../features/signup/signup.dart';
-import '../widget/onboardingTextFirst.dart';
-
 class OnboardingThird extends StatelessWidget {
   const OnboardingThird({super.key});
 
@@ -70,19 +68,16 @@ class OnboardingThird extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
-        child: SizedBox(
-          width: double.infinity,
-          child: GradientButtonBar(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const EnterMobileScreen()),
-              );
-            },
-            buttonText: "Get Started",
-          ),
+       padding: const EdgeInsets.only(left: 12,right: 12,bottom: 8),
+        child: GradientButtonBar(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const EnterMobileScreen()),
+            );
+          },
+          buttonText: "Get Started",
         ),
       ),
     );

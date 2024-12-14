@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class GradientButtonBar extends StatelessWidget {
+class Nextscreenbutton extends StatelessWidget {
   final VoidCallback onPressed;
   final String buttonText;
 
-  const GradientButtonBar({
+  const Nextscreenbutton({
     Key? key,
     required this.onPressed,
     required this.buttonText,
@@ -20,8 +20,8 @@ class GradientButtonBar extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: isDarkMode
-              ? [const Color(0xFF1F9686), const Color(0xFF211F96)]
-              : [const Color(0xFF1F9686), const Color(0xFF211F96)],
+              ? [const Color(0xFF211F96), const Color(0xFF211F96)]
+              : [const Color(0xFF211F96), const Color(0xFF211F96)],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
         ),

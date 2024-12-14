@@ -1,8 +1,8 @@
 import 'package:buzzcab/onboradingScreen/user_onboarding/onboardinThird.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import '../../features/authentication/login/screens/enterMobileNumber.dart';
 import '../../features/home/widgets/bottomButton.dart';
-import '../user_rider_switch.dart';
 import '../widget/onboardingTextFirst.dart';
 
 class OnboardingSecond extends StatelessWidget {
@@ -86,7 +86,7 @@ class OnboardingSecond extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ChoosePathScreen()),
+                    MaterialPageRoute(builder: (context) => const OnboardingThird()),
                   );
                 },
                 buttonText: "Next",
@@ -98,7 +98,7 @@ class OnboardingSecond extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => OnboardingThird()),
+                    MaterialPageRoute(builder: (context) => const EnterMobileScreen()),
                   );
                 },
                 buttonText: "SKIP",
