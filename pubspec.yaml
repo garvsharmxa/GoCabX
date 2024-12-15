@@ -24,7 +24,10 @@ dependencies:
   shimmer: ^3.0.0
   flutter_svg: ^2.0.16
   image: ^4.3.0
+<<<<<<< HEAD
   url_launcher: ^6.3.1
+=======
+>>>>>>> 3244c7c8d244d2778857f17d441069568980e077
 
 dev_dependencies:
   flutter_test:

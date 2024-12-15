@@ -5,6 +5,11 @@ import 'features/Drawer/Screen/DrawerPage.dart';
 import 'features/Drawer/Screen/FaqPage.dart';
 import 'features/Help_Support/Screen/HelpAndSupportPage.dart'; // Import google_fonts
 
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'app.dart'; // Import google_fonts
+
+
 void main() {
   runApp(const MyApp());
 }
@@ -19,7 +24,6 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         textTheme: GoogleFonts.montserratTextTheme(), // Use Google Fonts
         colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
@@ -38,7 +42,11 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       home:
           //  OnboardingFirst(),
+
       FaqPage(),
+
+          // const App(),
+
     );
   }
 }
