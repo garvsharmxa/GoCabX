@@ -27,10 +27,7 @@ dependencies:
   image_picker: ^1.1.2
   permission_handler: ^11.3.1
   image: ^4.3.0
-<<<<<<< HEAD
   url_launcher: ^6.3.1
-=======
->>>>>>> 3244c7c8d244d2778857f17d441069568980e077
 
 dev_dependencies:
   flutter_test:

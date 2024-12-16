@@ -47,9 +47,9 @@ class MyApp extends StatelessWidget {
       home:
           //  OnboardingFirst(),
 
-      FaqPage(),
+      // FaqPage(),
 
-          // const App(),
+          const App(),
 
     );
   }
