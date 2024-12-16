@@ -7,6 +7,7 @@ import 'features/history/screens/HistoryScreen.dart';
 import 'features/home/screen/HomeScreen.dart';
 import 'features/profile/screens/profileScreen.dart';
 import 'features/tools/screens/MyMachine.dart';
+import 'homePage/homepage.dart';
 
 class NavigationMenu extends StatelessWidget {
   const NavigationMenu({super.key});

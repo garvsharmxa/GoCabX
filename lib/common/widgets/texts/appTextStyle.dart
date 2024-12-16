@@ -1,51 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppTextStyles {
-  static const TextStyle h1 = TextStyle(
-    fontSize: 32.0,
-    fontWeight: FontWeight.bold,
-    color: Colors.black,
+  static final TextStyle h1 = GoogleFonts.poppins(
+    fontWeight: FontWeight.w600, // Weight 600
+    fontSize: 32.0, // Adjust size as per your design
   );
 
-  static const TextStyle h2 = TextStyle(
-    fontSize: 28.0,
-    fontWeight: FontWeight.bold,
-    color: Colors.black,
+  static final TextStyle h2 = GoogleFonts.poppins(
+    fontWeight: FontWeight.w600, // Weight 600
+    fontSize: 28.0, // Adjust size as per your design
   );
 
-  static const TextStyle h3 = TextStyle(
-    fontSize: 24.0,
-    fontWeight: FontWeight.bold,
-    color: Colors.black,
+  static final TextStyle h3 = GoogleFonts.poppins(
+    fontWeight: FontWeight.w600, // Weight 600
+    fontSize: 24.0, // Adjust size as per your design
   );
 
-  static const TextStyle h4 = TextStyle(
-    fontSize: 20.0,
-    fontWeight: FontWeight.bold,
-    color: Colors.black,
+  static final TextStyle h4 = GoogleFonts.poppins(
+    fontWeight: FontWeight.w500, // Weight 500
+    fontSize: 20.0, // Adjust size as per your design
   );
 
-  static const TextStyle h5 = TextStyle(
-    fontSize: 16.0,
-    fontWeight: FontWeight.bold,
-    color: Colors.black,
+  static final TextStyle h5 = GoogleFonts.poppins(
+    fontWeight: FontWeight.w500, // Weight 500
+    fontSize: 18.0, // Adjust size as per your design
   );
 
-  static const TextStyle h6 = TextStyle(
+  static final TextStyle h6 = GoogleFonts.poppins(
+    fontWeight: FontWeight.w500, // Weight 500
+    fontSize: 16.0, // Adjust size as per your design
+  );
+
+  static final TextStyle text = GoogleFonts.poppins(
+    fontWeight: FontWeight.w400,
     fontSize: 14.0,
-    fontWeight: FontWeight.bold,
-    color: Colors.black,
   );
 
-  static const TextStyle text = TextStyle(
-    fontSize: 14.0,
-    fontWeight: FontWeight.normal,
-    color: Colors.black,
+  static final TextStyle label = GoogleFonts.poppins(
+    fontWeight: FontWeight.w400, // Weight 400
+    fontSize: 12.0, // Adjust size as per your design
   );
 
-  static const TextStyle label = TextStyle(
-    fontSize: 12.0,
-    fontWeight: FontWeight.w600,
-    color: Colors.grey,
+  static final TextStyle caption = GoogleFonts.poppins(
+    fontWeight: FontWeight.w400, // Weight 400
+    fontSize: 10.0, // Adjust size as per your design
   );
 }
