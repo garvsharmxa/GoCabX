@@ -1,0 +1,49 @@
+{
+  "username": "Vinay",
+  "savedLocations": [
+    {
+      "name": "Home",
+      "address": "123 Main Street, New York, NY 10001"
+    },
+    {
+      "name": "Gym",
+      "address": "123 Main Street, New York, NY 10001"
+    },
+    {
+      "name": "Office",
+      "address": "123 Main Street, New York, NY 10001"
+    }
+  ],
+
+  "recentRides": [
+    {
+      "id": 1,
+      "startLocation": "Cannaught Palace, 123 abc Mall, New Delhi, 012345",
+      "endLocation": "Chandni Chowk, New Delhi, 054321",
+      "distance": "2.5 Km",
+      "rideAgain": true
+    },
+    {
+      "id": 2,
+      "startLocation": "Cannaught Palace, 123 abc Mall, New Delhi, 012345",
+      "endLocation": "Chandni Chowk, New Delhi, 054321",
+      "distance": "4.5 Km",
+      "rideAgain": true
+    }
+  ],
+
+  "promotions&offers": [
+    {
+      "title": "15% OFF WEEKEND SAVER",
+      "description": "T&C Apply",
+      "imageUrl": "https://example.com/weekend_saver.png",
+      "buttonText": "Apply for Coupon Code"
+    },
+    {
+      "title": "40% OFF MIDWEEK MADNESS",
+      "description": "T&C Apply",
+      "imageUrl": "https://example.com/midweek_madness.png",
+      "buttonText": "Apply for Coupon Code"
+    }
+  ]
+}

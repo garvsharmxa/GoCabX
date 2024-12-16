@@ -27,7 +27,8 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light, // Light mode
       ),
       darkTheme: ThemeData(
-        textTheme: GoogleFonts.montserratTextTheme(), // Use Google Fonts for dark theme
+        textTheme: GoogleFonts
+            .montserratTextTheme(), // Use Google Fonts for dark theme
         colorScheme: ColorScheme.fromSeed(
           seedColor: primaryColor,
           secondary: secondaryColor, // Define secondary color for dark mode
