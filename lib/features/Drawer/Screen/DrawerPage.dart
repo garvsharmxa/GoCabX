@@ -1,9 +1,15 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class DrawerPage extends StatelessWidget {
+class DrawerPage extends StatefulWidget {
   const DrawerPage({super.key});
 
+  @override
+  State<DrawerPage> createState() => _DrawerPageState();
+}
+
+class _DrawerPageState extends State<DrawerPage> {
   SvgPicture _getSvgForButton(String title) {
     switch (title) {
       case 'Home':
@@ -23,6 +29,8 @@ class DrawerPage extends StatelessWidget {
             "assets/icons/default.svg"); // Provide a default SVG
     }
   }
+
+  bool _isSwitchOn = false;
 
   @override
   Widget build(BuildContext context) {
@@ -140,22 +148,72 @@ class DrawerPage extends StatelessWidget {
                 },
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 10,
-                ),
-                // Use the SvgPicture returned by _getSvgForButton directly
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const SizedBox(width: 12), // Space between icon and text
+                  SvgPicture.asset("assets/icons/Frame_car.svg"),
 
-                const SizedBox(width: 10), // Space between icon and text
-                Text(
-                  "buttonTitles[index]",
-                  style:
-                      TextStyle(color: textColor, fontWeight: FontWeight.bold),
-                ),
-              ],
+                  // Use the SvgPicture returned by _getSvgForButton directly
+
+                  const SizedBox(width: 10), // Space between icon and text
+                  Text(
+                    "Switch to Rider (User) Mode",
+                    style: TextStyle(
+                        color: textColor, fontWeight: FontWeight.bold),
+                  ),
+                  Spacer(),
+                  CupertinoSwitch(
+                    value: _isSwitchOn,
+                    activeColor: Colors.green, // Color when ON
+                    trackColor: Colors.grey, // Color when OFF
+                    thumbColor: Colors.white, // Thumb color
+                    onChanged: (value) {
+                      setState(() {
+                        _isSwitchOn = value; // Update state
+                      });
+                    },
+                  ),
+                ],
+              ),
             ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+              child: Divider(
+                thickness: 1.5,
+                color: isDark ? Colors.white : const Color(0xFF121212),
+              ),
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+              child: InkWell(
+                onTap: () {},
+                child: Container(
+                  height: 50,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: 10,
+                      ),
+                      // Use the SvgPicture returned by _getSvgForButton directly
+                      SvgPicture.asset("assets/icons/Frame_logout.svg"),
+                      const SizedBox(width: 10), // Space between icon and text
+                      Text(
+                        "Logout",
+                        style: TextStyle(
+                            color: textColor, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
           ],
         ),
       ),
