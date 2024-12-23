@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../../../navigation_menu.dart';
+import '../../../../featuresRider/bottomNavigation.dart';
 
 class VerificationCompleteScreen extends StatefulWidget {
   @override
@@ -16,7 +15,7 @@ class _VerificationCompleteScreenState
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) =>const  NavigationMenu()), // Replace with your home screen widget
+        MaterialPageRoute(builder: (context) =>const  RiderNavigationMenu()), // Replace with your home screen widget
       );
     });
   }

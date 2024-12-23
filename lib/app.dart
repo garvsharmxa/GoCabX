@@ -1,12 +1,10 @@
-import 'package:buzzcab/homePage/homepage.dart';
-import 'package:buzzcab/homePage/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'onboradingScreen/onboardingFirst.dart';
-import 'utils/constants/text_strings.dart';
-import 'utils/device/web_material_scroll.dart';
-import 'utils/theme/theme.dart';
+import 'featuresDriver/onboradingScreen/onboardingFirst.dart';
+import 'featuresDriver/utils/constants/text_strings.dart';
+import 'featuresDriver/utils/device/web_material_scroll.dart';
+import 'featuresDriver/utils/theme/theme.dart';
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);

@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../backendApiFloder/riderApiService/riderServiceEndpoints.dart';
+import '../../../../featuresDriver/riderApiService/riderServiceEndpoints.dart';
 import '../../../../common/widgets/login_signup/number_validation.dart';
-import '../../../home/widgets/nextScreenButton.dart';
+import '../../../../featuresDriver/home/widgets/nextScreenButton.dart';
 import '../../otpScreen/otpScreen.dart';
 
 

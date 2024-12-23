@@ -1,13 +1,15 @@
 import 'package:buzzcab/app.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'features/Drawer/Screen/DrawerPage.dart';
-import 'features/Drawer/Screen/FaqPage.dart';
-import 'features/Help_Support/Screen/HelpAndSupportPage.dart'; // Import google_fonts
+import 'featuresDriver/Drawer/Screen/DrawerPage.dart';
+import 'featuresDriver/Drawer/Screen/FaqPage.dart';
+import 'featuresDriver/Help_Support/Screen/HelpAndSupportPage.dart'; // Import google_fonts
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'app.dart'; // Import google_fonts
+import 'app.dart';
+import 'featuresDriver/navigation_menu.dart';
+import 'featuresRider/bottomNavigation.dart'; // Import google_fonts
 
 
 void main() {
@@ -49,8 +51,10 @@ class MyApp extends StatelessWidget {
           //  OnboardingFirst(),
 
       // FaqPage(),
+      NavigationMenu(),
+      // RiderNavigationMenu(),
 
-          const App(),
+          // const App(),
 
     );
   }

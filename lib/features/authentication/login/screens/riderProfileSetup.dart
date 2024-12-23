@@ -1,5 +1,5 @@
 
-import 'package:buzzcab/features/home/widgets/nextScreenButton.dart';
+import 'package:buzzcab/featuresDriver/home/widgets/nextScreenButton.dart';
 import 'package:flutter/material.dart';
 
 import 'riderPhotoUpload.dart';

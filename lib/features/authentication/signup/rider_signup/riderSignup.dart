@@ -1,6 +1,6 @@
 import 'package:buzzcab/common/widgets/textfield/buzzcabTextField.dart';
 import 'package:buzzcab/features/authentication/login/screens/rider_login/riderLogin.dart';
-import 'package:buzzcab/features/registration/rider_registration/driverRegStep1.dart';
+import 'package:buzzcab/featuresDriver/registration/rider_registration/driverRegStep1.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
