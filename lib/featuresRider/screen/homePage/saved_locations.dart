@@ -16,9 +16,15 @@ class _SavedLocationsScreenState extends State<SavedLocationsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: Colors.transparent,
+        iconTheme: IconThemeData(
+            color: Theme.of(context).brightness == Brightness.dark
+                ? AppColors.background
+                : AppColors.accent),
       ),
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? const Color(0xFF121212)
+          : const Color(0xFFE6F5F3),
       body: Stack(
         children: [
           Padding(
@@ -94,7 +100,7 @@ class SavedLocationsCard extends StatelessWidget {
         width: double.infinity,
         height: 60,
         decoration: BoxDecoration(
-          color: Color(0xFFE9E9F5).withOpacity(0.7),
+          color: Color(0xFFE9E9F5).withOpacity(0.6),
           borderRadius: BorderRadius.circular(5),
         ),
         child: Padding(

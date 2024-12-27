@@ -28,6 +28,8 @@ dependencies:
   permission_handler: ^11.3.1
   image: ^4.3.0
   url_launcher: ^6.3.1
+  google_maps_flutter: ^2.10.0
+  location: ^7.0.1
 
 dev_dependencies:
   flutter_test:

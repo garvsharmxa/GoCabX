@@ -14,8 +14,17 @@ class _AddDestinationScreenState extends State<AddDestinationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        foregroundColor: AppColors.background,
+        backgroundColor: Colors.transparent,
+        iconTheme: IconThemeData(
+            color: Theme.of(context).brightness == Brightness.dark
+                ? AppColors.background
+                : AppColors.accent),
+      ),
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? const Color(0xFF121212)
+          : const Color(0xFFE6F5F3),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

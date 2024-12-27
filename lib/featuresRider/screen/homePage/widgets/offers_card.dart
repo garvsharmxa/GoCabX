@@ -6,16 +6,19 @@ import 'package:flutter_svg/svg.dart';
 
 class OffersCard extends StatelessWidget {
   final String offersAsset;
+  final BuildContext parentContext;
+
   const OffersCard({
     super.key,
     required this.offersAsset,
+    required this.parentContext,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(
+        Navigator.of(parentContext).push(
           MaterialPageRoute(
             builder: (context) => PromotionScreenSingleOffer(),
           ),
@@ -27,7 +30,9 @@ class OffersCard extends StatelessWidget {
           height: 125,
           width: 174,
           decoration: BoxDecoration(
-            color: AppColors.background,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? const Color(0xFF121212)
+                : const Color(0xFFE6F5F3),
             borderRadius: BorderRadius.circular(5),
             boxShadow: [
               BoxShadow(

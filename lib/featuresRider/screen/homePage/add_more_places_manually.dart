@@ -17,8 +17,17 @@ class _AddMorePlacesManuallyScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        foregroundColor: AppColors.background,
+        backgroundColor: Colors.transparent,
+        iconTheme: IconThemeData(
+            color: Theme.of(context).brightness == Brightness.dark
+                ? AppColors.background
+                : AppColors.accent),
+      ),
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? const Color(0xFF121212)
+          : const Color(0xFFE6F5F3),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Stack(
@@ -43,7 +52,7 @@ class _AddMorePlacesManuallyScreenState
                     height: 30,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
-                      color: Color(0xFFF2F2F2),
+                      color: Color(0xFFF2F2F2).withOpacity(0.7),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),

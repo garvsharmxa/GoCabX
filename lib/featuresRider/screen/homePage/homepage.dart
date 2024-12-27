@@ -8,6 +8,7 @@ import 'package:buzzcab/featuresRider/screen/homePage/widgets/offers_card.dart';
 import 'package:buzzcab/featuresRider/screen/homePage/widgets/oppurtunity_black_button.dart';
 import 'package:buzzcab/featuresRider/screen/homePage/widgets/recent_rides_card.dart';
 import 'package:buzzcab/featuresRider/screen/homePage/widgets/widget_icons.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -25,13 +26,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double w = MediaQuery.of(context).size.width;
+    double h = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
         foregroundColor: AppColors.background,
         title: HomeScreenAppBar(username: username),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? const Color(0xFF121212)
+          : const Color(0xFFE6F5F3),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,16 +162,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       scrollDirection: Axis.horizontal,
                       children: [
                         OffersCard(
+                          parentContext: context,
                           offersAsset:
                               'assets/images/content/offers_weekend_saver.svg',
                         ),
                         SizedBox(width: 10),
                         OffersCard(
+                          parentContext: context,
                           offersAsset:
                               'assets/images/content/offers_midweek_madness.svg',
                         ),
                         SizedBox(width: 10),
                         OffersCard(
+                          parentContext: context,
                           offersAsset:
                               'assets/images/content/offers_midweek_madness.svg',
                         ),
@@ -199,10 +207,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       scrollDirection: Axis.horizontal,
                       children: [
                         RecentRidesHomeScreenCard(
+                            parentContext: context,
                             recentRidesAsset: recentRidesAsset,
                             recentRidesAddress: recentRidesAddress),
                         SizedBox(width: 10),
                         RecentRidesHomeScreenCard(
+                            parentContext: context,
                             recentRidesAsset:
                                 'assets/images/content/recent_rides_bike.svg',
                             recentRidesAddress: recentRidesAddress),
@@ -220,9 +230,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   Container(
                     height: 150,
-                    width: double.infinity,
+                    width: w,
                     decoration: BoxDecoration(
-                      color: Color(0xFFE6F5F3),
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? const Color(0xFF1A1A1A)
+                          : Color(0xFFE6F5F3),
                       borderRadius: BorderRadius.circular(5),
                     ),
                     child: Stack(
@@ -267,7 +279,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(height: 10),
                   Container(
                       height: 122,
-                      width: double.infinity,
+                      width: w,
                       decoration: BoxDecoration(
                         color: Color(0xFF8F52CC),
                         borderRadius: BorderRadius.circular(5),

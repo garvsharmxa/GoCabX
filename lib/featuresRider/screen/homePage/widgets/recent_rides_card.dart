@@ -8,9 +8,12 @@ class RecentRidesHomeScreenCard extends StatelessWidget {
     super.key,
     required this.recentRidesAsset,
     required this.recentRidesAddress,
+    required this.parentContext,
   });
 
   final String recentRidesAsset;
+  final BuildContext parentContext;
+
   final String recentRidesAddress;
 
   @override
@@ -19,7 +22,9 @@ class RecentRidesHomeScreenCard extends StatelessWidget {
         width: 170,
         height: 100,
         decoration: BoxDecoration(
-          color: Color(0xFFE9E9F5),
+          color: Theme.of(context).brightness == Brightness.dark
+              ? const Color(0xFF090826)
+              : Color(0xFFE9E9F5),
           borderRadius: BorderRadius.circular(5),
         ),
         child: Stack(

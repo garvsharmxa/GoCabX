@@ -18,6 +18,10 @@ class _PromotionScreenVouchersState extends State<PromotionScreenVouchers> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         foregroundColor: AppColors.background,
+        iconTheme: IconThemeData(
+            color: Theme.of(context).brightness == Brightness.dark
+                ? AppColors.background
+                : AppColors.accent),
         centerTitle: true,
         title: Text(
           'Exclusive Offers',
@@ -65,6 +69,7 @@ class _PromotionScreenVouchersState extends State<PromotionScreenVouchers> {
                 padding: EdgeInsets.all(10),
                 children: List.generate(8, (index) {
                   return OffersCard(
+                      parentContext: context,
                       offersAsset:
                           'assets/images/content/offers_weekend_saver.svg');
                 }),
