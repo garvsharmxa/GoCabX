@@ -60,6 +60,7 @@ class ChoosePathScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: size.height / 12),
+            SizedBox(height: size.height /12),
 
             // Choose your path text
             Text(

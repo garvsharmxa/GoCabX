@@ -27,6 +27,7 @@ dependencies:
   image_picker: ^1.1.2
   permission_handler: ^11.3.1
   image: ^4.3.0
+<<<<<<< HEAD
   http: ^1.2.2
   json_annotation: ^4.9.0
   json_serializable: ^6.9.0
@@ -35,6 +36,12 @@ dependencies:
   google_places_flutter: ^2.0.6
   location: ^7.0.1
 
+=======
+<<<<<<< HEAD
+  url_launcher: ^6.3.1
+=======
+>>>>>>> 3244c7c8d244d2778857f17d441069568980e077
+>>>>>>> origin/garv
 
 dev_dependencies:
   flutter_test:
