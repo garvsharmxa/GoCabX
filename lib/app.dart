@@ -1,20 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'features/Utils_Screen/DriveOfflinePage.dart';
-import 'features/Utils_Screen/ErrorScreen.dart';
-import 'features/Utils_Screen/LoadingPage.dart';
-import 'features/Utils_Screen/LoadingPage2.dart';
-import 'features/Utils_Screen/RideCancelPage.dart';
-import 'features/Utils_Screen/RideCompletePage.dart';
-import 'features/Utils_Screen/SaveRide.dart';
-import 'features/Utils_Screen/SwitchingPage.dart';
-import 'features/Utils_Screen/ThanksPage.dart';
-import 'navigation_menu.dart';
-import 'onboradingScreen/onboardingFirst.dart';
-import 'utils/constants/colors.dart';
-import 'utils/constants/text_strings.dart';
-import 'utils/device/web_material_scroll.dart';
-import 'utils/theme/theme.dart';
+
+import 'featuresDriver/onboradingScreen/onboardingFirst.dart';
+import 'featuresDriver/utils/constants/text_strings.dart';
+import 'featuresDriver/utils/device/web_material_scroll.dart';
+import 'featuresDriver/utils/theme/theme.dart';
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
@@ -29,7 +19,8 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       scrollBehavior: MyCustomScrollBehavior(),
       home:
-       OnboardingFirst(),
+      //  HomeScreen(),
+      OnboardingFirst(),
       // DriveOfflinePage()
       // ErrorScreen(),
       // LoadingPage(),
@@ -39,7 +30,6 @@ class App extends StatelessWidget {
       // SaveRide(),
       // SwitchingPage(),
       // const Thankspage()
-
 
       // SignUpScreen()
       // NavigationMenu()

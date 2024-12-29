@@ -1,6 +1,16 @@
+import 'package:buzzcab/app.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'app.dart'; // Import google_fonts
+import 'featuresDriver/Drawer/Screen/DrawerPage.dart';
+import 'featuresDriver/Drawer/Screen/FaqPage.dart';
+import 'featuresDriver/Help_Support/Screen/HelpAndSupportPage.dart'; // Import google_fonts
+
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'app.dart';
+import 'featuresDriver/navigation_menu.dart';
+import 'featuresRider/bottomNavigation.dart'; // Import google_fonts
+
 
 void main() {
   runApp(const MyApp());
@@ -27,7 +37,8 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light, // Light mode
       ),
       darkTheme: ThemeData(
-        textTheme: GoogleFonts.montserratTextTheme(), // Use Google Fonts for dark theme
+        textTheme: GoogleFonts
+            .montserratTextTheme(), // Use Google Fonts for dark theme
         colorScheme: ColorScheme.fromSeed(
           seedColor: primaryColor,
           secondary: secondaryColor, // Define secondary color for dark mode
@@ -37,8 +48,14 @@ class MyApp extends StatelessWidget {
       ),
       themeMode: ThemeMode.system,
       home:
-          //  OnboardingFirst(),
-          const App(),
+      //  OnboardingFirst(),
+
+      // FaqPage(),
+      App()
+      // RiderNavigationMenu(),
+
+      // const App(),
+
     );
   }
 }

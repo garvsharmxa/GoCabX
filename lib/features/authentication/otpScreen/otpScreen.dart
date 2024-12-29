@@ -1,10 +1,10 @@
-import 'package:buzzcab/features/home/widgets/nextScreenButton.dart';
+import 'package:buzzcab/featuresDriver/home/widgets/nextScreenButton.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../backendApiFloder/riderApiService/riderServiceEndpoints.dart';
+import '../../../featuresDriver/riderApiService/riderServiceEndpoints.dart';
 import '../login/screens/riderPhotoUpload.dart';
 import '../login/screens/riderProfileSetup.dart';
 
