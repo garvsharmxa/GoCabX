@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../../featuresRider/screen/mapScreen/mapScreen.dart';
 
 class RideDetails extends StatefulWidget {
   const RideDetails({super.key});
@@ -76,7 +77,9 @@ class _RideDetailsState extends State<RideDetails> {
       appBar: AppBar(
         backgroundColor: backgroundColor,
         leading: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pop(context);
+          },
           icon: Icon(
             Icons.arrow_back,
             color: textColor,
@@ -113,11 +116,15 @@ class _RideDetailsState extends State<RideDetails> {
                 ),
                 child: Column(
                   children: [
-                    SizedBox(height: 5,),
+                    SizedBox(
+                      height: 5,
+                    ),
                     _buildIconRow(size, backgroundColor, textColor),
                     const Spacer(),
                     _buildIconRow(size, backgroundColor, textColor),
-                    SizedBox(height: 5,),
+                    SizedBox(
+                      height: 5,
+                    ),
                   ],
                 ),
               ),
@@ -154,8 +161,8 @@ class _RideDetailsState extends State<RideDetails> {
       padding: const EdgeInsets.all(8),
       child: Row(
         children: [
-          _buildIconBox(55, const Color(0xff1F9686),
-              "assets/icons/Overall Flow of Book Ride/Cancel/Vector.svg"),
+          _buildIconBox(
+              55, const Color(0xff1F9686), Icons.location_on_outlined),
           const SizedBox(width: 5),
           Expanded(
             child: Container(
@@ -171,35 +178,31 @@ class _RideDetailsState extends State<RideDetails> {
                   ),
                 ],
               ),
-              child: const Center(
-                child: TextField(
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 15),
-                    hintText:
-                        "Chandni Chowk, New Delhi, 054321", // Placeholder text
-                    hintStyle: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 16,
-                    ),
-                    border: InputBorder.none, // This removes the border.
-                  ),
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black, // Text color
-                  ),
+              child: Center(
+                  child: GestureDetector(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => MapScreen()));
+                },
+                child: Container(
+                  height: 50,
+                  child: Center(
+                      child: Text(
+                    "Chandni Chowk, New Delhi",
+                    style: TextStyle(color: Colors.grey, fontSize: 17),
+                  )),
                 ),
-              ),
+              )),
             ),
           ),
           const SizedBox(width: 5),
-          _buildIconBox2(55, textColor,
-              "assets/icons/Overall Flow of Book Ride/Cancel/Vectorsajdkjaskajsd.svg"),
+          _buildIconBox2(55, textColor, Icons.search),
         ],
       ),
     );
   }
 
-  Widget _buildIconBox(double size, Color color, String svg) {
+  Widget _buildIconBox(double size, Color color, IconData icon) {
     return Container(
       height: size,
       width: size,
@@ -209,12 +212,16 @@ class _RideDetailsState extends State<RideDetails> {
       ),
       child: Padding(
         padding: const EdgeInsets.all(13.0),
-        child: SvgPicture.asset(svg),
+        child: Icon(
+          icon,
+          color: Colors.white,
+          size: 30,
+        ),
       ),
     );
   }
 
-  Widget _buildIconBox2(double size, Color color, String svg) {
+  Widget _buildIconBox2(double size, Color color, IconData icon) {
     return Container(
       height: size,
       width: size,
@@ -224,7 +231,11 @@ class _RideDetailsState extends State<RideDetails> {
       ),
       child: Padding(
         padding: const EdgeInsets.all(13.0),
-        child: SvgPicture.asset(svg),
+        child: Icon(
+          icon,
+          color: Colors.white,
+          size: 30,
+        ),
       ),
     );
   }

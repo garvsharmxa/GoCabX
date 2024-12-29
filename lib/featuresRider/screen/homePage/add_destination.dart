@@ -1,8 +1,7 @@
+import 'package:buzzcab/common/widgets/colors/color.dart';
 import 'package:buzzcab/common/widgets/texts/appTextStyle.dart';
 import 'package:buzzcab/featuresRider/screen/homePage/add_more_places_manually.dart';
 import 'package:flutter/material.dart';
-
-import '../../../common/widgets/colors/color.dart';
 
 class AddDestinationScreen extends StatefulWidget {
   const AddDestinationScreen({super.key});

@@ -14,57 +14,43 @@ class RiderLoginScreen extends StatefulWidget {
 class _RiderLoginScreenState extends State<RiderLoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool termsAndConditions = false;
 
   @override
   Widget build(BuildContext context) {
-    final Color textColor = Theme.of(context).brightness == Brightness.dark
-        ? Colors.white
-        : Colors.black;
-
-    final isDarkMode =
-        MediaQuery.of(context).platformBrightness == Brightness.dark;
+    final bool isDarkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    final Color textColor = isDarkMode ? Colors.white : Colors.black;
 
     return Scaffold(
       backgroundColor: isDarkMode ? Colors.black : Colors.white,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              //Image + Text
-              Center(
-                child: Column(
-                  children: [
-                    Image.asset(
-                      "assets/images/content/rider_signup.png",
-                      scale: 4,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      "Join as a Roadie today!",
-                      style: TextStyle(
-                        fontSize: 26.0,
-                        fontWeight: FontWeight.bold,
-                        color: textColor,
-                      ),
-                    ),
-                    Text(
-                      "Log in to start driving and earning",
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w600,
-                        color: textColor,
-                      ),
-                    )
-                  ],
+              // Logo + Text
+              Image.asset("assets/images/content/rider_signup.png", height: 150),
+              const SizedBox(height: 16),
+              Text(
+                "Join as a Roadie today!",
+                style: GoogleFonts.poppins(
+                  fontSize: 26.0,
+                  fontWeight: FontWeight.bold,
+                  color: textColor,
                 ),
               ),
-              // Rider Signup For
-              const SizedBox(height: 24.0),
-              // Email
+              Text(
+                "Log in to start driving and earning",
+                style: GoogleFonts.poppins(
+                  fontSize: 16.0,
+                  color: textColor.withOpacity(0.7),
+                ),
+                textAlign: TextAlign.center,
+              ),
+
+              const SizedBox(height: 32.0),
+
+              // Email Field
               BuzzcabTextField(
                 labelText: "Email Address",
                 controller: _emailController,
@@ -73,10 +59,12 @@ class _RiderLoginScreenState extends State<RiderLoginScreen> {
                 hintText: "Enter Your Email Address",
                 prefixIcon: const Icon(Icons.email_outlined),
               ),
-              // Password
+              const SizedBox(height: 16),
+
+              // Password Field
               BuzzcabTextField(
                 labelText: "Password",
-                hintText: "Create a strong password",
+                hintText: "Enter Your Password",
                 controller: _passwordController,
                 isDarkMode: isDarkMode,
                 obscureText: true,
@@ -84,61 +72,61 @@ class _RiderLoginScreenState extends State<RiderLoginScreen> {
                 keyboardType: TextInputType.text,
               ),
 
+              const SizedBox(height: 8),
+
               // Forgot Password
               Align(
-                alignment: Alignment.centerLeft,
-                child: GestureDetector(
-                  onTap: () {
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => ForgotPasswordScreen()),
+                      MaterialPageRoute(builder: (context) => ForgotPasswordScreen()),
                     );
                   },
                   child: Text(
                     "Forgot Password?",
                     style: GoogleFonts.poppins(
-                      fontSize: 16.0,
-                      color: isDarkMode ? Colors.white : Colors.red,
-                      // fontWeight: FontWeight.bold,
+                      fontSize: 14.0,
+                      color: isDarkMode ? Colors.blueAccent : Colors.red,
                     ),
                   ),
                 ),
               ),
 
-              const Spacer(),
+              const SizedBox(height: 32.0),
 
-              // Sign Up Button
+              // Login Button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Add your navigation logic here
-                  },
+                  onPressed: () {},
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        isDarkMode ? Colors.blue : const Color(0xFF211F96),
+                    backgroundColor: isDarkMode ? Colors.blueAccent : const Color(0xFF211F96),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+                      borderRadius: BorderRadius.circular(12.0),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    padding: const EdgeInsets.symmetric(vertical: 14.0),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Log In',
-                    style: TextStyle(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                    style: GoogleFonts.poppins(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
-              const SizedBox(height: 16.0),
+
+              const SizedBox(height: 24.0),
+
+              // Sign Up Link
               GestureDetector(
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => const RiderSignupScreen()),
+                    MaterialPageRoute(builder: (context) => const RiderSignupScreen()),
                   );
                 },
                 child: RichText(
@@ -146,8 +134,7 @@ class _RiderLoginScreenState extends State<RiderLoginScreen> {
                     text: "New member? ",
                     style: GoogleFonts.poppins(
                       fontSize: 14.0,
-                      color: isDarkMode ? Colors.white : Colors.black,
-                      fontWeight: FontWeight.bold,
+                      color: textColor,
                     ),
                     children: [
                       TextSpan(

@@ -1,25 +1,9 @@
 import 'package:buzzcab/app.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'features/Drawer/Screen/DrawerPage.dart';
-import 'features/Drawer/Screen/FaqPage.dart';
-import 'features/Help_Support/Screen/HelpAndSupportPage.dart'; // Import google_fonts
-
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'featuresDriver/Drawer/Screen/DrawerPage.dart';
-import 'featuresDriver/Drawer/Screen/FaqPage.dart';
-import 'featuresDriver/Help_Support/Screen/HelpAndSupportPage.dart'; // Import google_fonts
-
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'app.dart';
-import 'featuresDriver/navigation_menu.dart';
-import 'featuresRider/bottomNavigation.dart'; // Import google_fonts
-
-
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -54,23 +38,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       themeMode: ThemeMode.system,
-      home:
-
-      //  OnboardingFirst(),
-
-      // FaqPage(),
-      App()
-      // RiderNavigationMenu(),
-
-      // const App(),
-
-          //  OnboardingFirst(),
-
-
-
-          // const App(),
-
-
+      home: App()
     );
   }
 }

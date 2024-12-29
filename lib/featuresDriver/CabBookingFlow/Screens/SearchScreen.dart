@@ -22,6 +22,7 @@ class _SearchScreenState extends State<SearchScreen> {
   void _onMapCreated(GoogleMapController controller) {
     _controller.complete(controller);
   }
+
   @override
   Widget build(BuildContext context) {
     final bool isDarkMode =
@@ -34,7 +35,7 @@ class _SearchScreenState extends State<SearchScreen> {
         title: const Text(
           "Today's destination? 👀",
           style: TextStyle(
-            fontSize: 25,
+            fontSize: 22.5,
             fontWeight: FontWeight.w900,
           ),
         ),
@@ -120,7 +121,7 @@ class SearchCard extends StatelessWidget {
                 fontSize: 20,
                 fontWeight: FontWeight.w900,
                 color:
-                isDarkMode ? kDarkBackgroundColor : kLightBackgroundColor,
+                    isDarkMode ? kDarkBackgroundColor : kLightBackgroundColor,
               ),
             ),
             const SizedBox(height: 10),
@@ -170,7 +171,8 @@ class SearchCard extends StatelessWidget {
                         ),
                         // Schedule Button
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 8),
                           decoration: BoxDecoration(
                             color: isDarkMode ? Colors.white : Colors.black,
                             borderRadius: BorderRadius.circular(10),
@@ -180,7 +182,8 @@ class SearchCard extends StatelessWidget {
                               Text(
                                 "Schedule",
                                 style: TextStyle(
-                                  color: isDarkMode ? Colors.black : Colors.white,
+                                  color:
+                                      isDarkMode ? Colors.black : Colors.white,
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -217,4 +220,3 @@ class SearchCard extends StatelessWidget {
     );
   }
 }
-

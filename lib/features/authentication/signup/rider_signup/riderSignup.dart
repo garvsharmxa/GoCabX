@@ -14,61 +14,57 @@ class RiderSignupScreen extends StatefulWidget {
 class _RiderSignupScreenState extends State<RiderSignupScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _mobileController =
-      TextEditingController(text: "+91 ");
+  TextEditingController(text: "+91 ");
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool termsAndConditions = false;
 
   @override
   Widget build(BuildContext context) {
-    final Color textColor = Theme.of(context).brightness == Brightness.dark
-        ? Colors.white
-        : Colors.black;
-
     final isDarkMode =
         MediaQuery.of(context).platformBrightness == Brightness.dark;
+    final Color backgroundColor = isDarkMode ? Colors.black : Colors.white;
+    final Color primaryColor = isDarkMode ? Colors.blueAccent : Color(0xFF211F96);
+    final Color textColor = isDarkMode ? Colors.white : Colors.black;
+    final Color borderColor = isDarkMode ? Colors.white : Colors.black;
 
     return Scaffold(
-      backgroundColor: isDarkMode ? Colors.black : Colors.white,
+      backgroundColor: backgroundColor,
       body: SingleChildScrollView(
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                //Image + Text
                 Center(
                   child: Column(
                     children: [
                       Image.asset(
                         "assets/images/content/rider_signup.png",
-                        scale: 4,
+                        scale: 3.5,
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 12),
                       Text(
                         "Join as a Roadie today!",
-                        style: TextStyle(
+                        style: GoogleFonts.poppins(
                           fontSize: 26.0,
                           fontWeight: FontWeight.bold,
                           color: textColor,
                         ),
                       ),
                       Text(
-                        "Log in to start driving and earning",
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.w600,
-                          color: textColor,
+                        "Sign up to start riding and earning",
+                        style: GoogleFonts.poppins(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w500,
+                          color: textColor.withOpacity(0.7),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
-                // Rider Signup For
-                const SizedBox(height: 24.0),
-                // Name
+                const SizedBox(height: 30.0),
                 BuzzcabTextField(
                   labelText: "Full Name",
                   hintText: "Enter Your Full Name",
@@ -76,36 +72,29 @@ class _RiderSignupScreenState extends State<RiderSignupScreen> {
                   isDarkMode: isDarkMode,
                   keyboardType: TextInputType.text,
                 ),
-                // Mobile
                 BuzzcabTextField(
-                  labelText: "Mobile",
-                  // hintText: "Enter Mobile Number",
+                  labelText: "Mobile Number",
                   controller: _mobileController,
-                  prefixText: "+91 ",
                   isDarkMode: isDarkMode,
                   keyboardType: TextInputType.phone,
                 ),
-                // Email
                 BuzzcabTextField(
                   labelText: "Email Address",
+                  hintText: "Enter Your Email",
                   controller: _emailController,
                   isDarkMode: isDarkMode,
                   keyboardType: TextInputType.emailAddress,
-                  hintText: "Enter Your Email Address",
-                  prefixIcon: const Icon(Icons.email_outlined),
+                  prefixIcon: Icon(Icons.email_outlined, color: borderColor),
                 ),
-                // Password
                 BuzzcabTextField(
                   labelText: "Password",
                   hintText: "Create a strong password",
                   controller: _passwordController,
                   isDarkMode: isDarkMode,
                   obscureText: true,
-                  prefixIcon: const Icon(Icons.lock_outline),
-                  keyboardType: TextInputType.text,
+                  prefixIcon: Icon(Icons.lock_outline, color: borderColor),
                 ),
-
-                // Terms and Conditions Text
+                const SizedBox(height: 10.0),
                 Row(
                   children: [
                     GestureDetector(
@@ -115,23 +104,15 @@ class _RiderSignupScreenState extends State<RiderSignupScreen> {
                         });
                       },
                       child: Container(
-                        width: 26,
-                        height: 26,
+                        width: 24,
+                        height: 24,
                         decoration: BoxDecoration(
                           shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.circular(4.0),
-                          border: Border.all(
-                            width: 2,
-                            color: isDarkMode ? Colors.white : Colors.black,
-                          ),
+                          borderRadius: BorderRadius.circular(6.0),
+                          border: Border.all(width: 2, color: borderColor),
                         ),
                         child: termsAndConditions
-                            ? Icon(
-                                Icons.check,
-                                weight: 0.1,
-                                color: isDarkMode ? Colors.white : Colors.black,
-                                size: 20.0,
-                              )
+                            ? Icon(Icons.check, color: primaryColor, size: 20.0)
                             : null,
                       ),
                     ),
@@ -140,33 +121,20 @@ class _RiderSignupScreenState extends State<RiderSignupScreen> {
                       child: RichText(
                         text: TextSpan(
                           text: 'By signing up, you agree to our ',
-                          style: GoogleFonts.poppins(
-                            fontSize: 12.0,
-                            color: isDarkMode
-                                ? Colors.white
-                                : const Color(0xFF212121),
-                          ),
+                          style: GoogleFonts.poppins(fontSize: 12.0, color: textColor),
                           children: [
                             TextSpan(
                               text: 'Terms & Conditions',
                               style: GoogleFonts.poppins(
-                                color: const Color(0xFF211F96),
+                                color: primaryColor,
                                 decoration: TextDecoration.underline,
                               ),
                             ),
-                            TextSpan(
-                              text: ' and ',
-                              style: GoogleFonts.poppins(
-                                fontSize: 12.0,
-                                color: isDarkMode
-                                    ? Colors.white
-                                    : const Color(0xFF212121),
-                              ),
-                            ),
+                            TextSpan(text: ' and ', style: GoogleFonts.poppins(fontSize: 12.0, color: textColor)),
                             TextSpan(
                               text: 'Privacy Policy.',
                               style: GoogleFonts.poppins(
-                                color: const Color(0xFF211F96),
+                                color: primaryColor,
                                 decoration: TextDecoration.underline,
                               ),
                             ),
@@ -176,169 +144,63 @@ class _RiderSignupScreenState extends State<RiderSignupScreen> {
                     ),
                   ],
                 ),
-
                 const SizedBox(height: 24.0),
-
-                // Sign Up Button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => const DriverRegStep1()),
+                        MaterialPageRoute(builder: (context) => const DriverRegStep1()),
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          isDarkMode ? Colors.blue : const Color(0xFF211F96),
+                      backgroundColor: primaryColor,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                     ),
                     child: const Text(
-                      'Sign up',
-                      style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
+                      'Sign Up',
+                      style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.white),
                     ),
                   ),
                 ),
-                const SizedBox(height: 16.0),
-
-                // Signup as Roadie
+                const SizedBox(height: 20.0),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => RiderLoginScreen()),
+                          MaterialPageRoute(builder: (context) => RiderLoginScreen()),
                         );
                       },
                       child: RichText(
                         text: TextSpan(
                           text: "Already a member? ",
-                          style: GoogleFonts.poppins(
-                            fontSize: 14.0,
-                            color: isDarkMode ? Colors.white : Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: GoogleFonts.poppins(fontSize: 14.0, color: textColor),
                           children: [
                             TextSpan(
                               text: 'Log In',
                               style: GoogleFonts.poppins(
-                                color: const Color(0xFF211F96),
+                                color: primaryColor,
                                 decoration: TextDecoration.underline,
-                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ],
                         ),
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        // Add navigation to Roadie signup screen
-                      },
-                      child: RichText(
-                        text: TextSpan(
-                            text: "Signup as ",
-                            style: GoogleFonts.poppins(
-                              fontSize: 14.0,
-                              color: isDarkMode ? Colors.white : Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            children: [
-                              TextSpan(
-                                  text: 'Rider',
-                                  style: GoogleFonts.poppins(
-                                    color: const Color(0xFF211F96),
-                                    decoration: TextDecoration.underline,
-                                    fontWeight: FontWeight.bold,
-                                  )),
-                            ]),
-                      ),
-                    ),
                   ],
                 ),
-                const SizedBox(height: 16.0),
               ],
             ),
           ),
         ),
       ),
-      // bottomNavigationBar: Padding(
-      //   padding: EdgeInsets.all(8),
-      //   child: Column(
-      //     children: [
-      //       // Sign Up Button
-      //       SizedBox(
-      //         width: double.infinity,
-      //         child: ElevatedButton(
-      //           onPressed: () {
-      //             // Add your navigation logic here
-      //           },
-      //           style: ElevatedButton.styleFrom(
-      //             backgroundColor:
-      //                 isDarkMode ? Colors.blue : const Color(0xFF211F96),
-      //             shape: RoundedRectangleBorder(
-      //               borderRadius: BorderRadius.circular(8.0),
-      //             ),
-      //             padding: const EdgeInsets.symmetric(vertical: 16.0),
-      //           ),
-      //           child: const Text(
-      //             'Sign up',
-      //             style: TextStyle(
-      //                 fontSize: 16.0,
-      //                 fontWeight: FontWeight.bold,
-      //                 color: Colors.white),
-      //           ),
-      //         ),
-      //       ),
-      //       const SizedBox(height: 16.0),
-
-      //       // Signup as Roadie
-      //       Row(
-      //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //         children: [
-      //           GestureDetector(
-      //             onTap: () {
-      //               // Adding the navigation
-      //             },
-      //             child: Text(
-      //               "Already a member? Log In",
-      //               style: GoogleFonts.poppins(
-      //                 fontSize: 14.0,
-      //                 color: isDarkMode ? Colors.white : Colors.black,
-      //                 fontWeight: FontWeight.bold,
-      //               ),
-      //             ),
-      //           ),
-      //           GestureDetector(
-      //             onTap: () {
-      //               // Add navigation to Roadie signup screen
-      //             },
-      //             child: Text(
-      //               'Signup as Rider',
-      //               style: TextStyle(
-      //                 fontSize: 14.0,
-      //                 color: isDarkMode ? Colors.white : Colors.black,
-      //                 fontWeight: FontWeight.bold,
-      //               ),
-      //             ),
-      //           ),
-      //         ],
-      //       ),
-      //       const SizedBox(height: 16.0),
-      //     ],
-      //   ),
-      // ),
     );
   }
 }

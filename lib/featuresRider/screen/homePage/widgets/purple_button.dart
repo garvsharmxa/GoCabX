@@ -25,8 +25,8 @@ class PurpleButton extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 10.0),
             child: Text(title,
-                style:
-                    AppTextStyles.text.copyWith(color: AppColors.background)),
+                style: AppTextStyles.text
+                    .copyWith(color: AppColors.background)),
           ),
         ),
       ),

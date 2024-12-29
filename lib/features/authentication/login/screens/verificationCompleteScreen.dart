@@ -15,7 +15,7 @@ class _VerificationCompleteScreenState
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) =>const  RiderNavigationMenu()), // Replace with your home screen widget
+        MaterialPageRoute(builder: (context) =>  RiderNavigationMenu()), // Replace with your home screen widget
       );
     });
   }

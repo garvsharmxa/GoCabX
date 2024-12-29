@@ -22,16 +22,16 @@ class _SaveRideState extends State<SaveRide> {
             : Colors.white;
     return Scaffold(
       backgroundColor: backgroundColor,
-      appBar: AppBar(
-        backgroundColor: backgroundColor,
-        leading: IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.arrow_back,
-              size: 27,
-              color: textColor,
-            )),
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: backgroundColor,
+      //   leading: IconButton(
+      //       onPressed: () {},
+      //       icon: Icon(
+      //         Icons.arrow_back,
+      //         size: 27,
+      //         color: textColor,
+      //       )),
+      // ),
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

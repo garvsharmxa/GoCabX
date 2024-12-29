@@ -1,9 +1,12 @@
+import 'package:buzzcab/featuresRider/screen/setting/rider_setting.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
+import '../features/Drawer/Screen/DrawerPage.dart';
 import 'explore/screens/ExploreScreen.dart';
 
+import 'history/screens/HistoryScreen.dart';
 import 'home/screen/HomeScreen.dart';
 import 'profile/screens/profileScreen.dart';
 import 'rideRequest/ride_request_homepage.dart';
@@ -149,9 +152,9 @@ class NavigationController extends GetxController {
 
   final screens = [
     const HomeScreen(),
-    const ExploreScreen(),
+    const HistoryScreen(),
     const RideRequest(),
-    const MyMachineScreen(),
-     ProfileScreen(),
+    const RiderSetting(),
+     DrawerPage(),
   ];
 }

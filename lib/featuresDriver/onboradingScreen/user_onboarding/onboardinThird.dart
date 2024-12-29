@@ -68,7 +68,7 @@ class OnboardingThird extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: Padding(
-       padding: const EdgeInsets.only(left: 12,right: 12,bottom: 8),
+       padding: const EdgeInsets.only(left: 20,right: 20,bottom: 20),
         child: GradientButtonBar(
           onPressed: () {
             Navigator.push(

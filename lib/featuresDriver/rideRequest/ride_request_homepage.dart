@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import '../Utils_Screen/DriveOfflinePage.dart';
 import 'widgets/rideCard_DataModel.dart';
 import 'widgets/rideCard_widiget.dart';
 import 'widgets/switchModeWidget.dart';
-
 
 class RideRequest extends StatefulWidget {
   const RideRequest({super.key});
@@ -27,22 +25,27 @@ class _RideRequestState extends State<RideRequest> {
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(size.width * 0.04),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Switch Mode Widget
-              SwitchModeWidget(
-                isOnlineMode: isOnlineMode,
-                onModeChange: (mode) {
-                  setState(() {
-                    isOnlineMode = mode;
-                  });
-                },
-              ),
-              SizedBox(height: size.height * 0.02),
-              // Show content based on the selected mode
-              isOnlineMode ? _buildOnlineModeContent(size, isDarkMode) : const DriveOfflinePage(),
-            ],
+          child: SingleChildScrollView(
+            // Make the entire body scrollable
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Switch Mode Widget
+                SwitchModeWidget(
+                  isOnlineMode: isOnlineMode,
+                  onModeChange: (mode) {
+                    setState(() {
+                      isOnlineMode = mode;
+                    });
+                  },
+                ),
+                SizedBox(height: size.height * 0.02),
+                // Show content based on the selected mode
+                isOnlineMode
+                    ? _buildOnlineModeContent(size, isDarkMode)
+                    : const DriveOfflinePage(),
+              ],
+            ),
           ),
         ),
       ),
@@ -50,36 +53,37 @@ class _RideRequestState extends State<RideRequest> {
   }
 
   Widget _buildOnlineModeContent(Size size, bool isDarkMode) {
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Active Rides',
-            style: GoogleFonts.poppins(
-              fontSize: size.width * 0.045,
-              fontWeight: FontWeight.bold,
-              color: isDarkMode ? Colors.white : Colors.black,
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Active Rides',
+          style: GoogleFonts.poppins(
+            fontSize: size.width * 0.045,
+            fontWeight: FontWeight.bold,
+            color: isDarkMode ? Colors.white : Colors.black,
           ),
-          Text(
-            'Current Rides and Details',
-            style: GoogleFonts.poppins(
-              fontSize: size.width * 0.040,
-              color: isDarkMode ? Colors.grey.shade300 : Colors.black54,
-            ),
+        ),
+        Text(
+          'Current Rides and Details',
+          style: GoogleFonts.poppins(
+            fontSize: size.width * 0.040,
+            color: isDarkMode ? Colors.grey.shade300 : Colors.black54,
           ),
-          SizedBox(height: size.height * 0.01),
-          Expanded(
-            child: ListView.builder(
-              itemCount: rideData.length,
-              itemBuilder: (context, index) {
-                return RideCard(rideData[index], size);
-              },
-            ),
+        ),
+        SizedBox(height: size.height * 0.01),
+        // ListView.builder should be wrapped in a Container or SizedBox to prevent overflow
+        Container(
+          height:
+              size.height * 0.9, // Adjust the height based on available space
+          child: ListView.builder(
+            itemCount: rideData.length,
+            itemBuilder: (context, index) {
+              return RideCard(rideData[index], size);
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
