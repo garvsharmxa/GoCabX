@@ -26,7 +26,7 @@ class HomeScreenAppBar extends StatelessWidget {
           SizedBox(width: 10),
           Text(
             "Welcome, ${username} 👋🏻",
-            style: AppTextStyles.h6(context).copyWith(color: AppColors.background),
+            style: AppTextStyles.h6.copyWith(color: AppColors.background),
           ),
           Spacer(),
           CircleAvatar(

@@ -8,6 +8,7 @@ import 'package:buzzcab/featuresRider/screen/homePage/widgets/offers_card.dart';
 import 'package:buzzcab/featuresRider/screen/homePage/widgets/oppurtunity_black_button.dart';
 import 'package:buzzcab/featuresRider/screen/homePage/widgets/recent_rides_card.dart';
 import 'package:buzzcab/featuresRider/screen/homePage/widgets/widget_icons.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -35,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       backgroundColor: Theme.of(context).brightness == Brightness.dark
           ? const Color(0xFF121212)
-          : const Color(0xFFFFFFFF),
+          : const Color(0xFFE6F5F3),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           SizedBox(width: 10),
                           Text(
                             'Book Cabs',
-                            style: AppTextStyles.text(context)
+                            style: AppTextStyles.text
                                 .copyWith(color: AppColors.background),
                           )
                         ],
@@ -78,13 +79,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   Text(
                     'Your Saved Places',
-                    style: AppTextStyles.text(context),
+                    style: AppTextStyles.text,
                   ),
                   SizedBox(height: 5),
                   Row(
                     children: [
                       Text('Your Go-To Rides, Just a Tap Away',
-                          style: AppTextStyles.caption(context)
+                          style: AppTextStyles.caption
                               .copyWith(color: AppColors.subText)),
                       Spacer(),
                       GestureDetector(
@@ -96,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             Text(
                               'See More',
-                              style: AppTextStyles.caption(context),
+                              style: AppTextStyles.caption,
                             ),
                             Icon(
                               Icons.arrow_right_alt,
@@ -124,13 +125,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   Text(
                     'Promotions & Offers',
-                    style: AppTextStyles.text(context),
+                    style: AppTextStyles.text,
                   ),
                   SizedBox(height: 5),
                   Row(
                     children: [
                       Text('More Rides, More Discounts!',
-                          style: AppTextStyles.caption(context)
+                          style: AppTextStyles.caption
                               .copyWith(color: AppColors.subText)),
                       Spacer(),
                       GestureDetector(
@@ -143,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         },
                         child: Text(
                           'See More',
-                          style: AppTextStyles.caption(context),
+                          style: AppTextStyles.caption,
                         ),
                       ),
                       Icon(
@@ -183,12 +184,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(height: 5),
                   Row(
                     children: [
-                      Text('Your Recent Rides',
-                          style: AppTextStyles.text(context)),
+                      Text('Your Recent Rides', style: AppTextStyles.text),
                       Spacer(),
                       Text(
                         'See More',
-                        style: AppTextStyles.caption(context),
+                        style: AppTextStyles.caption,
                       ),
                       Icon(
                         Icons.arrow_right_alt,
@@ -224,7 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   // Opportunities Section
                   Text('Opportunities for Professional Drivers',
-                      style: AppTextStyles.text(context)),
+                      style: AppTextStyles.text),
 
                   SizedBox(height: 10),
 
@@ -252,11 +252,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text('Apply to Drive with Us',
-                                      style: AppTextStyles.text(context)),
+                                      style: AppTextStyles.text),
                                   SizedBox(height: 10),
                                   Text(
                                     'Join our trusted team for flexible work opportunities and higher earnings!',
-                                    style: AppTextStyles.caption(context),
+                                    style: AppTextStyles.caption,
                                   ),
                                   SizedBox(height: 10),
                                   BlackHuggingButton(title: 'Apply Now!'),
@@ -275,8 +275,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   SizedBox(height: 15),
 
-                  Text('Stay Updated on Offers',
-                      style: AppTextStyles.text(context)),
+                  Text('Stay Updated on Offers', style: AppTextStyles.text),
                   SizedBox(height: 10),
                   Container(
                       height: 122,
@@ -297,7 +296,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 SizedBox(width: 5),
                                 Text(
                                   'Stay Up-to-date!',
-                                  style: AppTextStyles.text(context)
+                                  style: AppTextStyles.text
                                       .copyWith(color: AppColors.background),
                                 ),
                               ],
@@ -305,7 +304,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             SizedBox(height: 10),
                             Text(
                                 'Enable notifications to receive updates on new deals and special promotions directly on your device. Follow us on social media for more giveaways!',
-                                style: AppTextStyles.caption(context).copyWith(
+                                style: AppTextStyles.caption.copyWith(
                                     color: AppColors.background, fontSize: 12))
                           ],
                         ),

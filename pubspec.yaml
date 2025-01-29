@@ -1,11 +1,11 @@
 name: buzzcab
 description: "A new Flutter project."
-publish_to: "none"
+publish_to: 'none'
 
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.4.3 <4.0.0"
+  sdk: '>=3.4.3 <4.0.0'
 
 dependencies:
   flutter:
@@ -30,15 +30,16 @@ dependencies:
   url_launcher: ^6.3.1
   google_maps_flutter: ^2.10.0
   location: ^7.0.1
-  flutter_polyline_points: ^2.1.0
 
 dev_dependencies:
-  # flutter_test:
-  #   sdk: flutter
+  flutter_test:
+    sdk: flutter
   flutter_lints: ^3.0.0
+
 
 flutter:
   uses-material-design: true
+
 
   assets:
     - assets/logos/
@@ -51,3 +52,5 @@ flutter:
     - assets/images/animations/f078240be4398f332e5a2eaaed88e9d0.gif
     - assets/images/content/Frame 267.svg
     - assets/images/content/Group 53.svg
+
+ 

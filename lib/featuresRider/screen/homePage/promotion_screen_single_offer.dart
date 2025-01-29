@@ -61,34 +61,33 @@ class _PromotionScreenSingleOfferState
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('What\'s Inside',
-                          style: AppTextStyles.text(context)),
+                      Text('What\'s Inside', style: AppTextStyles.text),
                       SizedBox(height: 10),
                       Text(
                           '• Get Flat ₹75 off on all rides between 10 AM and 4 PM, every Wednesday.',
-                          style: AppTextStyles.label(context)
+                          style: AppTextStyles.label
                               .copyWith(color: AppColors.subText)),
                       SizedBox(height: 20),
-                      Text('Description', style: AppTextStyles.text(context)),
+                      Text('Description', style: AppTextStyles.text),
                       SizedBox(height: 10),
                       Text(
                           '• Enjoy Flat ₹75 off on all rides every Wednesday from 10 AM to 4 PM. No code needed; discount applies automatically at checkout!',
-                          style: AppTextStyles.label(context)
+                          style: AppTextStyles.label
                               .copyWith(color: AppColors.subText)),
                       SizedBox(height: 20),
-                      Text('How to Redeem', style: AppTextStyles.text(context)),
+                      Text('How to Redeem', style: AppTextStyles.text),
                       SizedBox(height: 10),
                       Text(
                           '• Just book a ride within the specified hours, and the discount will be automatically applied.',
-                          style: AppTextStyles.label(context)
+                          style: AppTextStyles.label
                               .copyWith(color: AppColors.subText)),
                       SizedBox(height: 20),
                       Text('Terms & Conditions Apply',
-                          style: AppTextStyles.text(context)),
+                          style: AppTextStyles.text),
                       SizedBox(height: 10),
                       Text(
                           '• Offer valid only on Wednesdays. \n• Available for rides booked between 10 AM and 4 PM. \n• Cannot be combined with other promotions. \n• Offer valid for a limited time.',
-                          style: AppTextStyles.label(context)
+                          style: AppTextStyles.label
                               .copyWith(color: AppColors.subText)),
                       SizedBox(height: 100),
                     ],

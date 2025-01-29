@@ -62,7 +62,7 @@ class _AddMorePlacesMapScreenState extends State<AddMorePlacesMapScreen> {
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
                           "New Delhi , Delhi, 01234....",
-                          style: AppTextStyles.label(context)
+                          style: AppTextStyles.label
                               .copyWith(color: AppColors.accent),
                         ),
                       ),

@@ -1,129 +1,13 @@
-import 'dart:async';
-
 import 'package:buzzcab/common/widgets/colors/color.dart';
 import 'package:buzzcab/common/widgets/texts/appTextStyle.dart';
-import 'package:buzzcab/featuresRider/consts.dart';
-import 'package:buzzcab/featuresRider/screen/mapScreen/mapScreen.dart';
+import 'package:buzzcab/mapScreen/mapScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
 
-class HomeScreenMapContainer extends StatefulWidget {
+class HomeScreenMapContainer extends StatelessWidget {
   const HomeScreenMapContainer({
     super.key,
   });
-
-  @override
-  State<HomeScreenMapContainer> createState() => _HomeScreenMapContainerState();
-}
-
-class _HomeScreenMapContainerState extends State<HomeScreenMapContainer> {
-  final Completer<GoogleMapController> _mapController =
-      Completer<GoogleMapController>();
-  Set<Marker> _markers = {};
-
-  GoogleMapController? _controller;
-  Location _location = new Location();
-  LatLng? currentP = LatLng(0, 0);
-  Map<PolylineId, Polyline> _polylines = {};
-
-  @override
-  void initState() {
-    super.initState();
-    _getCurrentLocation();
-  }
-
-  Future<void> cameraMove(LatLng position) async {
-    final GoogleMapController controller = await _mapController.future;
-
-    await _controller!.animateCamera(CameraUpdate.newCameraPosition(
-      CameraPosition(
-        target: position,
-        zoom: 13,
-      ),
-    ));
-  }
-
-  Future<void> _getCurrentLocation() async {
-    bool _serviceEnabled;
-    PermissionStatus _permissionGranted;
-
-    _serviceEnabled = await _location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await _location.requestService();
-      if (!_serviceEnabled) {
-        return;
-      }
-    }
-
-    _permissionGranted = await _location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await _location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
-        return;
-      }
-    }
-
-    _location.onLocationChanged.listen((LocationData currentLocation) {
-      if (currentLocation.latitude != null &&
-          currentLocation.longitude != null) {
-        setState(() {
-          currentP =
-              LatLng(currentLocation.latitude!, currentLocation.longitude!);
-          debugPrint(
-              "lat: ${currentLocation.latitude}, lng: ${currentLocation.longitude}");
-
-          cameraMove(currentP!);
-        });
-      }
-    });
-  }
-
-  Future<List<LatLng>> getPolyline() async {
-    List<LatLng> polyline = [];
-    PolylinePoints polylinePoints = PolylinePoints();
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-      googleApiKey: dirApiKey,
-      request: PolylineRequest(
-        mode: TravelMode.driving,
-        origin: PointLatLng(currentP!.latitude, currentP!.longitude),
-        destination: PointLatLng(_markers.first.position.latitude,
-            _markers.first.position.longitude),
-      ),
-    );
-    if (result.points.isNotEmpty) {
-      result.points.forEach((PointLatLng point) {
-        polyline.add(LatLng(point.latitude, point.longitude));
-      });
-    } else {
-      debugPrint(result.errorMessage);
-    }
-    return polyline;
-  }
-
-  void _addMarker(LatLng position, String id) {
-    final marker = Marker(
-      markerId: MarkerId(id),
-      position: position,
-    );
-    setState(() {
-      _markers.add(marker);
-    });
-  }
-
-  void generatePolyline(List<LatLng> polylineCoords) async {
-    PolylineId id = PolylineId("poly");
-    Polyline polyline = Polyline(
-      polylineId: id,
-      color: Colors.black,
-      points: polylineCoords,
-      width: 2,
-    );
-    setState(() {
-      _polylines[id] = polyline;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +15,7 @@ class _HomeScreenMapContainerState extends State<HomeScreenMapContainer> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Ride Ready? Let\'s Roll!',
-            style: AppTextStyles.h6(context).copyWith(color: AppColors.background)),
+            style: AppTextStyles.h6.copyWith(color: AppColors.background)),
         SizedBox(height: 15),
         Row(
           children: [
@@ -157,7 +41,7 @@ class _HomeScreenMapContainerState extends State<HomeScreenMapContainer> {
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Text("Search any location, place...",
-                      style: AppTextStyles.label(context)
+                      style: AppTextStyles.label
                           .copyWith(color: AppColors.background)),
                 ),
               ),
@@ -190,20 +74,12 @@ class _HomeScreenMapContainerState extends State<HomeScreenMapContainer> {
                 ],
               ),
               child: GoogleMap(
-                onMapCreated: (GoogleMapController controller) =>
-                    _mapController.complete(controller),
                 initialCameraPosition: CameraPosition(
-                  target: currentP!,
-                  zoom: 13,
+                  target: LatLng(37.42796133580664, -122.085749655962),
+                  zoom: 14.4746,
                 ),
-                onTap: (LatLng position) {
-                  _addMarker(position, 'marker_${_markers.length}');
-                  getPolyline().then((coordinates) {
-                    generatePolyline(coordinates);
-                  });
-                },
-                myLocationEnabled: true,
-                myLocationButtonEnabled: true,
+                mapType: MapType.normal,
+                onMapCreated: (GoogleMapController controller) {},
               ),
             ),
           ),

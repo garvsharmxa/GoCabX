@@ -31,8 +31,7 @@ class _AddDestinationScreenState extends State<AddDestinationScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text("Add a Destination",
-                style: AppTextStyles.h5(context)
-                    .copyWith(fontWeight: FontWeight.w700)),
+                style: AppTextStyles.h5.copyWith(fontWeight: FontWeight.w700)),
             SizedBox(height: 20),
             ListTile(
               contentPadding: EdgeInsets.all(0),
@@ -43,7 +42,7 @@ class _AddDestinationScreenState extends State<AddDestinationScreen> {
               ),
               title: Text(
                 "Add Home",
-                style: AppTextStyles.label(context),
+                style: AppTextStyles.label,
               ),
               onTap: () {},
             ),
@@ -53,7 +52,7 @@ class _AddDestinationScreenState extends State<AddDestinationScreen> {
                 backgroundColor: Color(0xFFE6E6E6),
                 child: const Icon(Icons.work_outline, color: AppColors.subText),
               ),
-              title: Text("Add Work", style: AppTextStyles.label(context)),
+              title: Text("Add Work", style: AppTextStyles.label),
               onTap: () {},
             ),
             SizedBox(height: 20),
@@ -73,12 +72,12 @@ class _AddDestinationScreenState extends State<AddDestinationScreen> {
               ),
               title: Text(
                 "Add New",
-                style: AppTextStyles.label(context)
-                    .copyWith(fontWeight: FontWeight.w700),
+                style:
+                    AppTextStyles.label.copyWith(fontWeight: FontWeight.w700),
               ),
               subtitle: Text("Save your Favourite Places",
-                  style: AppTextStyles.caption(context)
-                      .copyWith(color: AppColors.subText)),
+                  style:
+                      AppTextStyles.caption.copyWith(color: AppColors.subText)),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -115,11 +114,11 @@ class SavedLocationItem extends StatelessWidget {
       ),
       title: Text(
         title,
-        style: AppTextStyles.label(context),
+        style: AppTextStyles.label,
       ),
       subtitle: Text(
         "Edit",
-        style: AppTextStyles.caption(context).copyWith(
+        style: AppTextStyles.caption.copyWith(
           decoration: TextDecoration.underline,
           color: AppColors.secondary,
         ),

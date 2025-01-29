@@ -34,13 +34,13 @@ class _SavedLocationsScreenState extends State<SavedLocationsScreen> {
               children: [
                 Text(
                   'Favorites',
-                  style: AppTextStyles.h5(context).copyWith(
+                  style: AppTextStyles.h5.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 Text(
                   "Quick Access to Your Go-To Spots!",
-                  style: AppTextStyles.text(context),
+                  style: AppTextStyles.text,
                 ),
                 SizedBox(height: 20),
                 SavedLocationsCard(
@@ -120,7 +120,7 @@ class SavedLocationsCard extends StatelessWidget {
                       ),
                       Text(
                         title,
-                        style: AppTextStyles.label(context)
+                        style: AppTextStyles.label
                             .copyWith(fontWeight: FontWeight.w700),
                       ),
                     ],
@@ -128,7 +128,7 @@ class SavedLocationsCard extends StatelessWidget {
                   SizedBox(height: 5),
                   Text(
                     address,
-                    style: AppTextStyles.label(context),
+                    style: AppTextStyles.label,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
@@ -165,12 +165,11 @@ class EmptyList extends StatelessWidget {
               SizedBox(height: 20),
               Text(
                 "No Saved Rides!",
-                style: AppTextStyles.h4(context)
-                    .copyWith(fontWeight: FontWeight.w600),
+                style: AppTextStyles.h4.copyWith(fontWeight: FontWeight.w600),
               ),
               Text(
                 "Your saved rides will appear here once you add",
-                style: AppTextStyles.text(context),
+                style: AppTextStyles.text,
               )
             ],
           ),

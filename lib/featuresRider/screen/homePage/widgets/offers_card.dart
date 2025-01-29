@@ -60,7 +60,7 @@ class OffersCard extends StatelessWidget {
                   child: Center(
                     child: Text(
                       'Apply for Coupon Code',
-                      style: AppTextStyles.caption(context).copyWith(
+                      style: AppTextStyles.caption.copyWith(
                         color: AppColors.background,
                         fontWeight: FontWeight.w700,
                       ),

@@ -1,8 +1,4 @@
-import 'dart:async';
-
-import 'package:buzzcab/featuresRider/consts.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
@@ -14,34 +10,17 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  final Completer<GoogleMapController> _mapController =
-      Completer<GoogleMapController>();
-  Set<Marker> _markers = {};
-  LatLng? centerMarkerPosition;
-
   GoogleMapController? _controller;
   Location _location = new Location();
   LatLng? currentP = null;
-  Map<PolylineId, Polyline> _polylines = {};
-  bool _initialCameraMoveDone = false;
+  Set<Marker> _markers = {};
+  Set<Polyline> _polylines = {};
+  LatLng _initialPosition = LatLng(23.8103, 90.4125);
 
   @override
   void initState() {
     super.initState();
     _getCurrentLocation();
-  }
-
-  Future<void> cameraMove(LatLng position) async {
-    final GoogleMapController controller = await _mapController.future;
-
-    if (_controller != null) {
-      await _controller!.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(
-          target: position,
-          zoom: 13,
-        ),
-      ));
-    }
   }
 
   Future<void> _getCurrentLocation() async {
@@ -70,103 +49,43 @@ class _MapScreenState extends State<MapScreen> {
         setState(() {
           currentP =
               LatLng(currentLocation.latitude!, currentLocation.longitude!);
-          debugPrint(
-              "lat: ${currentLocation.latitude}, lng: ${currentLocation.longitude}");
-
-          cameraMove(currentP!);
+          _addMarker(currentP!, 'current');
         });
+        _controller?.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(
+              target: currentP!,
+              zoom: 15,
+            ),
+          ),
+        );
       }
     });
   }
 
-  Future<List<LatLng>> getPolyline() async {
-    List<LatLng> polyline = [];
-    PolylinePoints polylinePoints = PolylinePoints();
-    PolylineResult result;
-
-    if (_markers.length == 1) {
-      result = await polylinePoints.getRouteBetweenCoordinates(
-        googleApiKey: dirApiKey,
-        request: PolylineRequest(
-          mode: TravelMode.driving,
-          origin: PointLatLng(currentP!.latitude, currentP!.longitude),
-          destination: PointLatLng(_markers.first.position.latitude,
-              _markers.first.position.longitude),
+  void _addMarker(LatLng position, String id) {
+    setState(() {
+      _markers.add(
+        Marker(
+          markerId: MarkerId(id),
+          position: position,
+          icon: BitmapDescriptor.defaultMarker,
         ),
       );
-    } else if (_markers.length == 2) {
-      result = await polylinePoints.getRouteBetweenCoordinates(
-        googleApiKey: dirApiKey,
-        request: PolylineRequest(
-          mode: TravelMode.driving,
-          origin: PointLatLng(_markers.first.position.latitude,
-              _markers.first.position.longitude),
-          destination: PointLatLng(_markers.last.position.latitude,
-              _markers.last.position.longitude),
-        ),
-      );
-    } else {
-      return polyline;
-    }
-
-    if (result.points.isNotEmpty) {
-      result.points.forEach((PointLatLng point) {
-        polyline.add(LatLng(point.latitude, point.longitude));
-      });
-    } else {
-      debugPrint(result.errorMessage);
-    }
-    return polyline;
-  }
-
-  Future<void> _addMarker(LatLng position, String id) async {
-    setState(() {
-      if (_markers.length >= 2) {
-        _markers.clear();
-      }
-      final marker = Marker(
-        markerId: MarkerId(id),
-        position: position,
-      );
-      _markers.add(marker);
-    });
-    if (_markers.length > 0) {
-      List<LatLng> polylineCoords = await getPolyline();
-      generatePolyline(polylineCoords);
-    }
-  }
-
-  void generatePolyline(List<LatLng> polylineCoords) async {
-    PolylineId id = PolylineId("poly");
-    Polyline polyline = Polyline(
-      polylineId: id,
-      color: Colors.black,
-      points: polylineCoords,
-      width: 2,
-    );
-    setState(() {
-      _polylines[id] = polyline;
     });
   }
 
-  Future<void> _handlePressButton() async {
-    Prediction? p = await PlacesAutocomplete.show(
-      context: context,
-      apiKey: dirApiKey,
-      mode: Mode.overlay, // Mode.fullscreen
-      language: "en",
-      components: [Component(Component.country, "us")],
-    );
-
-    if (p != null) {
-      PlacesDetailsResponse detail = await GoogleMapsPlaces(apiKey: dirApiKey)
-          .getDetailsByPlaceId(p.placeId!);
-      final lat = detail.result.geometry!.location.lat;
-      final lng = detail.result.geometry!.location.lng;
-
-      _addMarker(LatLng(lat, lng), 'searched_location');
-      cameraMove(LatLng(lat, lng));
-    }
+  void _drawRoute(List<LatLng> points) {
+    setState(() {
+      _polylines.add(
+        Polyline(
+          polylineId: PolylineId('route'),
+          points: points,
+          color: Colors.blue,
+          width: 5,
+        ),
+      );
+    });
   }
 
   @override
@@ -175,90 +94,25 @@ class _MapScreenState extends State<MapScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         iconTheme: IconThemeData(
-          color: Theme.of(context).brightness == Brightness.dark
-              ? Colors.black
-              : Colors.white,
-        ),
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.black
+                : Colors.white),
       ),
       extendBodyBehindAppBar: true,
       body: currentP == null
-          ? Center(
-              child: Text("Loading..."),
-            )
-          : Stack(
-              children: [
-                GoogleMap(
-                  onMapCreated: (GoogleMapController controller) {
-                    _mapController.complete(controller);
-                    _controller = controller;
-                  },
-                  initialCameraPosition: CameraPosition(
-                    target: currentP!,
-                    zoom: 13,
-                  ),
-                  markers: _markers,
-                  polylines: Set<Polyline>.of(_polylines.values),
-                  onCameraMove: (CameraPosition position) {
-                    setState(() {
-                      centerMarkerPosition = position.target;
-                    });
-                  },
-                  myLocationEnabled: true,
-                  myLocationButtonEnabled: true,
-                ),
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 40.0),
-                    child: Icon(
-                      Icons.location_pin,
-                      size: 50,
-                      color: Colors.red,
-                    ),
-                  ),
-                ),
-                Positioned(
-                  bottom: 50,
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (centerMarkerPosition != null) {
-                          _addMarker(centerMarkerPosition!, 'center_marker');
-                        }
-                      },
-                      child: Text("Confirm Location"),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 80,
-                  left: 10,
-                  right: 10,
-                  child:
-                      // textfield with borders, and white bg
-                      Container(
-                    height: 50,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      color: Color(0xFF292929),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          hintText: "Search any location, place...",
-                          border: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          errorBorder: InputBorder.none,
-                          disabledBorder: InputBorder.none,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+          ? Center(child: Text("Loading..."))
+          : GoogleMap(
+              initialCameraPosition: CameraPosition(
+                target: _initialPosition,
+                zoom: 15,
+              ),
+              markers: _markers,
+              polylines: _polylines,
+              onMapCreated: (GoogleMapController controller) {
+                _controller = controller;
+              },
+              myLocationEnabled: true,
+              myLocationButtonEnabled: true,
             ),
     );
   }
