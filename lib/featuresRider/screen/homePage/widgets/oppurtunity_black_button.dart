@@ -20,7 +20,7 @@ class BlackHuggingButton extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 14, vertical: 6),
         child: Text(
           title,
-          style: AppTextStyles.label.copyWith(
+          style: AppTextStyles.label(context).copyWith(
             color: AppColors.background,
             fontWeight: FontWeight.w700,
           ),

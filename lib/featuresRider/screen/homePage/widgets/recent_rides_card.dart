@@ -51,7 +51,7 @@ class RecentRidesHomeScreenCard extends StatelessWidget {
                           recentRidesAddress,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: AppTextStyles.label,
+                          style: AppTextStyles.label(context),
                         ),
                       ),
                       SizedBox(height: 5),
@@ -65,7 +65,7 @@ class RecentRidesHomeScreenCard extends StatelessWidget {
                         child: Center(
                           child: Text(
                             'Ride Again',
-                            style: AppTextStyles.caption.copyWith(
+                            style: AppTextStyles.caption(context).copyWith(
                                 color: AppColors.secondary,
                                 fontWeight: FontWeight.w600),
                           ),

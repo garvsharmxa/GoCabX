@@ -1,16 +1,6 @@
-import 'package:buzzcab/app.dart';
+import 'package:buzzcab/featuresRider/screen/homePage/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'featuresDriver/Drawer/Screen/DrawerPage.dart';
-import 'featuresDriver/Drawer/Screen/FaqPage.dart';
-import 'featuresDriver/Help_Support/Screen/HelpAndSupportPage.dart'; // Import google_fonts
-
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'app.dart';
-import 'featuresDriver/navigation_menu.dart';
-import 'featuresRider/bottomNavigation.dart'; // Import google_fonts
-
 
 void main() {
   runApp(const MyApp());
@@ -21,28 +11,26 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Define the primary color and color scheme to avoid repetition
     final Color primaryColor = const Color(0xFF1F9686);
-    final Color secondaryColor = const Color(0xFF211F96); // Secondary color
+    final Color secondaryColor = const Color.fromARGB(255, 255, 255, 255);
 
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        textTheme: GoogleFonts.montserratTextTheme(), // Use Google Fonts
+        textTheme: GoogleFonts.montserratTextTheme(),
         colorScheme: ColorScheme.fromSeed(
           seedColor: primaryColor,
-          secondary: secondaryColor, // Define secondary color
+          secondary: secondaryColor,
         ),
         useMaterial3: true,
-        brightness: Brightness.light, // Light mode
+        brightness: Brightness.light,
       ),
       darkTheme: ThemeData(
-        textTheme: GoogleFonts
-            .montserratTextTheme(), // Use Google Fonts for dark theme
+        textTheme: GoogleFonts.montserratTextTheme(),
         colorScheme: ColorScheme.fromSeed(
           seedColor: primaryColor,
-          secondary: secondaryColor, // Define secondary color for dark mode
-          brightness: Brightness.dark, // Dark mode
+          secondary: secondaryColor,
+          brightness: Brightness.dark,
         ),
         useMaterial3: true,
       ),
@@ -50,12 +38,12 @@ class MyApp extends StatelessWidget {
       home:
           //  OnboardingFirst(),
 
-      // FaqPage(),
-      NavigationMenu(),
+          // FaqPage(),
+          HomeScreen(),
+      // NavigationMenu(),
       // RiderNavigationMenu(),
 
-          // const App(),
-
+      // const App(),
     );
   }
 }

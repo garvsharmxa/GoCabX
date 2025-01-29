@@ -57,7 +57,7 @@ class _AddMorePlacesManuallyScreenState
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text("New Delhi , Delhi, 01234....",
-                          style: AppTextStyles.label),
+                          style: AppTextStyles.label(context)),
                     ),
                   ),
                 ),
@@ -96,10 +96,11 @@ class _AddMorePlacesManuallyScreenState
                 SizedBox(height: 15),
                 Text(
                   "Add the Location",
-                  style: AppTextStyles.h4.copyWith(fontWeight: FontWeight.w600),
+                  style: AppTextStyles.h4(context)
+                      .copyWith(fontWeight: FontWeight.w600),
                 ),
                 Text("Quickly access your top locations anytime!",
-                    style: AppTextStyles.text),
+                    style: AppTextStyles.text(context)),
               ],
             )
           ],

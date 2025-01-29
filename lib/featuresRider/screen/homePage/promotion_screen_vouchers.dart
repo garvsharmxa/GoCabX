@@ -25,7 +25,8 @@ class _PromotionScreenVouchersState extends State<PromotionScreenVouchers> {
         centerTitle: true,
         title: Text(
           'Exclusive Offers',
-          style: AppTextStyles.h4.copyWith(fontWeight: FontWeight.w600),
+          style:
+              AppTextStyles.h4(context).copyWith(fontWeight: FontWeight.w600),
         ),
       ),
       extendBodyBehindAppBar: true,
@@ -42,7 +43,8 @@ class _PromotionScreenVouchersState extends State<PromotionScreenVouchers> {
                 children: [
                   Row(
                     children: [
-                      Text('Vouchers', style: AppTextStyles.text.copyWith()),
+                      Text('Vouchers',
+                          style: AppTextStyles.text(context).copyWith()),
                       SizedBox(width: 5),
                       Icon(
                         Icons.local_offer_rounded,
@@ -53,7 +55,7 @@ class _PromotionScreenVouchersState extends State<PromotionScreenVouchers> {
                   ),
                   Text(
                     'Grab amazing discounts and rewards tailored just for you.',
-                    style: AppTextStyles.caption,
+                    style: AppTextStyles.caption(context),
                   ),
                 ],
               ),
@@ -83,7 +85,7 @@ class _PromotionScreenVouchersState extends State<PromotionScreenVouchers> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text('You\'ve reached the end',
-                        style: AppTextStyles.caption
+                        style: AppTextStyles.caption(context)
                             .copyWith(color: AppColors.subText)),
                   ),
                   Expanded(child: Divider()),
