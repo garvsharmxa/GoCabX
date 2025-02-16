@@ -4,7 +4,10 @@ import '../../common/widgets/button/actionButton.dart';
 import 'user_onboarding/onboardingSecond.dart';
 
 class ChoosePathScreen extends StatelessWidget {
-  const ChoosePathScreen({super.key});
+  final int passengerRoleId;
+  final int driverRoleId;
+  const ChoosePathScreen(
+      {super.key, required this.passengerRoleId, required this.driverRoleId});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +19,8 @@ class ChoosePathScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: isDarkMode ? Colors.black : Colors.white,
       body: SafeArea(
-        child: SingleChildScrollView( // Wrap Column inside a scrollable view
+        child: SingleChildScrollView(
+          // Wrap Column inside a scrollable view
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -92,7 +96,7 @@ class ChoosePathScreen extends StatelessWidget {
                     isDarkMode: isDarkMode,
                   ),
                   ActionCard(
-                    title: 'Drive as Roadie  ',
+                    title: 'Drive as Roadie',
                     icon: Icons.attractions,
                     onTap: () {
                       Navigator.push(

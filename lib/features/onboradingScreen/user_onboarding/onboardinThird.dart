@@ -76,7 +76,7 @@ class OnboardingThird extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => const EnterMobileScreen()),
+                  builder: (context) =>  EnterMobileScreen()),
             );
           },
           buttonText: "Get Started",

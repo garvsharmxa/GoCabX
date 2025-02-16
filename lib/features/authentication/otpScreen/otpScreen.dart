@@ -1,16 +1,18 @@
-import 'package:buzzcab/featuresDriver/home/widgets/nextScreenButton.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../../featuresDriver/riderApiService/riderServiceEndpoints.dart';
+import 'package:http/http.dart' as http;
+import '../../../featuresDriver/home/widgets/nextScreenButton.dart';
 import '../login/screens/riderProfileSetup.dart';
 
 class OtpScreen extends StatefulWidget {
   final String mobileNumber;
+  final String sessionId;
 
-  const OtpScreen({Key? key, required this.mobileNumber}) : super(key: key);
+
+  const OtpScreen({Key? key, required this.mobileNumber, required this.sessionId}) : super(key: key);
 
   @override
   _OtpScreenState createState() => _OtpScreenState();
@@ -18,9 +20,15 @@ class OtpScreen extends StatefulWidget {
 
 class _OtpScreenState extends State<OtpScreen> {
   String otp = "";
-  String? _sessionId;
   bool isLoading = false;
   bool isResendingOtp = false;
+  String? sessionId; // Store sessionId locally
+
+  @override
+  void initState() {
+    super.initState();
+    sessionId = widget.sessionId; // Initialize with the widget's sessionId
+  }
 
   Future<void> _storeToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
@@ -31,13 +39,27 @@ class _OtpScreenState extends State<OtpScreen> {
     setState(() => isResendingOtp = true);
 
     try {
-      final response = await Riderserviceendpoints.sendOtp(widget.mobileNumber);
-      setState(() => _sessionId = response['sessionid']);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('OTP sent successfully')),
+      final response = await http.post(
+        Uri.parse('http://13.49.117.190:7022/v1/auth/send-otp'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'mobile': widget.mobileNumber}),
       );
+
+      final responseData = jsonDecode(response.body);
+      debugPrint("Send OTP Response: $responseData");
+
+      if (responseData['success'] == true) {
+        setState(() => sessionId = responseData['data']['sessionId']); // Update sessionId
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('OTP sent successfully')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(responseData['message'] ?? 'Failed to send OTP')),
+        );
+      }
     } catch (e) {
+      debugPrint("Error sending OTP: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to send OTP')),
       );
@@ -47,9 +69,16 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   Future<void> verifyOtp() async {
-    if (otp.isEmpty || otp.length != 6) {
+    if (otp.isEmpty || otp.length != 6 || !RegExp(r'^[0-9]+$').hasMatch(otp)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a valid OTP')),
+        const SnackBar(content: Text('Please enter a valid 6-digit numeric OTP')),
+      );
+      return;
+    }
+
+    if (sessionId == null || sessionId!.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Session ID missing, please resend OTP')),
       );
       return;
     }
@@ -57,12 +86,21 @@ class _OtpScreenState extends State<OtpScreen> {
     setState(() => isLoading = true);
 
     try {
-      final response = await Riderserviceendpoints.verifyOtp(
-        widget.mobileNumber, otp, _sessionId ?? '',
+      final response = await http.post(
+        Uri.parse('http://13.49.117.190:7022/v1/auth/verify-otp'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'mobile': widget.mobileNumber,
+          'otp': otp,
+          'sessionId': sessionId,
+        }),
       );
 
-      if (response['success'] == true) {
-        final token = response['token'];
+      final responseData = jsonDecode(response.body);
+      debugPrint("OTP Verification Response: $responseData");
+
+      if (responseData['success'] == true) {
+        final token = responseData['data']['token'];
         if (token != null) await _storeToken(token);
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -75,12 +113,13 @@ class _OtpScreenState extends State<OtpScreen> {
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(response['msg'] ?? 'OTP verification failed')),
+          SnackBar(content: Text("Error: ${responseData['message'] ?? 'OTP verification failed'}")),
         );
       }
     } catch (error) {
+      debugPrint("Error verifying OTP: $error");
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('An error occurred')),
+        const SnackBar(content: Text('An error occurred while verifying OTP')),
       );
     } finally {
       setState(() => isLoading = false);
@@ -146,9 +185,15 @@ class _OtpScreenState extends State<OtpScreen> {
                 activeColor: Colors.transparent,
                 inactiveColor: Colors.transparent,
                 selectedColor: Colors.transparent,
-                activeFillColor: isDarkMode ? const Color(0xFF051A17) : const Color(0xFFE6F5F3),
-                inactiveFillColor: isDarkMode ? const Color(0xFF051A17) : const Color(0xFFE6F5F3),
-                selectedFillColor: isDarkMode ? const Color(0xFF051A17) : const Color(0xFFE6F5F3),
+                activeFillColor: isDarkMode
+                    ? const Color(0xFF051A17)
+                    : const Color(0xFFE6F5F3),
+                inactiveFillColor: isDarkMode
+                    ? const Color(0xFF051A17)
+                    : const Color(0xFFE6F5F3),
+                selectedFillColor: isDarkMode
+                    ? const Color(0xFF051A17)
+                    : const Color(0xFFE6F5F3),
               ),
               enableActiveFill: true,
               onChanged: (value) {
@@ -176,16 +221,20 @@ class _OtpScreenState extends State<OtpScreen> {
 
             // Verify Button
             Nextscreenbutton(
-              onPressed: (){
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ProfileSetupScreen()),
-                );
+              onPressed: () {
+                if (otp.length != 6 || !RegExp(r'^[0-9]+$').hasMatch(otp)) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please enter a valid 6-digit numeric OTP'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                } else {
+                  verifyOtp();
+                }
               },
-              // onPressed: isLoading ? null : verifyOtp,
               buttonText: isLoading ? "Verifying..." : "Verify",
             ),
-
             const SizedBox(height: 24),
           ],
         ),

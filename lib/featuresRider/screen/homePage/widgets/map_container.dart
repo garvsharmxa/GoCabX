@@ -1,11 +1,7 @@
 import 'dart:async';
-
 import 'package:buzzcab/common/widgets/colors/color.dart';
 import 'package:buzzcab/common/widgets/texts/appTextStyle.dart';
-import 'package:buzzcab/featuresDriver/CabBookingFlow/Screens/RideDetails.dart';
-import 'package:buzzcab/featuresDriver/CabBookingFlow/Screens/SearchScreen.dart';
 import 'package:buzzcab/featuresRider/screen/mapScreen/mapScreen.dart';
-import 'package:buzzcab/featuresRider/screen/mapScreen/searchLocationScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -106,7 +102,7 @@ class _HomeScreenMapContainerState extends State<HomeScreenMapContainer> {
                     ),
                   ),
                 ),
-                Expanded(child: Divider(color: AppColors.subText)),
+                const Expanded(child: Divider(color: AppColors.subText)),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: InkWell(
@@ -153,8 +149,10 @@ class _HomeScreenMapContainerState extends State<HomeScreenMapContainer> {
     return Stack(
       children: [
         InkWell(
-          onTap: () => Navigator.push(context,
-              MaterialPageRoute(builder: (_) => const RideDetails())),
+          onTap: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (_) =>  MapScreen()));
+          },
           child: Row(
             children: [
               Container(
@@ -164,7 +162,7 @@ class _HomeScreenMapContainerState extends State<HomeScreenMapContainer> {
                   color: AppColors.primary,
                   borderRadius: BorderRadius.circular(5),
                 ),
-                child: Icon(Icons.search, color: AppColors.background),
+                child: const Icon(Icons.search, color: AppColors.background),
               ),
               const SizedBox(width: 5),
               Expanded(
@@ -218,35 +216,35 @@ class _HomeScreenMapContainerState extends State<HomeScreenMapContainer> {
 
   Widget _buildMapContainer(BuildContext context) {
     return GestureDetector(
-      onLongPress: () => Navigator.push(
-          context, MaterialPageRoute(builder: (_) => const MapScreen())),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(5),
-        child: Container(
-          height: 200,
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(color: Colors.grey),
-              BoxShadow(
-                  color: Colors.transparent, spreadRadius: -5, blurRadius: 20),
-            ],
-          ),
-          child:
-          GoogleMap(
-            onMapCreated: (GoogleMapController controller) {
-              if (!_mapController.isCompleted) {
-                _mapController.complete(controller);
-              }
-            },
-            initialCameraPosition: CameraPosition(
-              target: _currentLocation ?? LatLng(37.7749, -122.4194), // Default to San Francisco
-              zoom: 13,
-            ),
-            myLocationEnabled: true,
-            myLocationButtonEnabled: true,
-            zoomControlsEnabled: false,
-          )
+      onTap: () {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (_) =>  MapScreen()));
+      },
+      child:
+      Container(
+        height: 200,
+        decoration: const BoxDecoration(
+          boxShadow: [
+            BoxShadow(color: Colors.grey),
+            BoxShadow(
+                color: Colors.transparent, spreadRadius: -5, blurRadius: 20),
+          ],
         ),
+        child:
+        GoogleMap(
+          onMapCreated: (GoogleMapController controller) {
+            if (!_mapController.isCompleted) {
+              _mapController.complete(controller);
+            }
+          },
+          initialCameraPosition: CameraPosition(
+            target: _currentLocation ?? const LatLng(37.7749, -122.4194), // Default to San Francisco
+            zoom: 13,
+          ),
+          myLocationEnabled: true,
+          myLocationButtonEnabled: true,
+          zoomControlsEnabled: false,
+        )
       ),
     );
   }

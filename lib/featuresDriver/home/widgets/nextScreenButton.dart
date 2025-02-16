@@ -16,7 +16,7 @@ class Nextscreenbutton extends StatelessWidget {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
-      height: 40,
+      height: 45,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: isDarkMode

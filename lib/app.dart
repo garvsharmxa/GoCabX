@@ -1,3 +1,4 @@
+import 'package:buzzcab/featuresRider/screen/mapScreen/mapScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'featuresDriver/onboradingScreen/onboardingFirst.dart';
@@ -25,10 +26,10 @@ class App extends StatelessWidget {
   /// Determines the initial screen dynamically
   Widget _getInitialScreen() {
     try {
-      return OnboardingFirst(); // Change this to any screen when needed
+      return const OnboardingFirst(); // Change this to any screen when needed
     } catch (e) {
       debugPrint("Error loading OnboardingFirst: $e");
-      return Scaffold(
+      return const Scaffold(
         body: Center(child: Text("Something went wrong! Restart the app.")),
       );
     }

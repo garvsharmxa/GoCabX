@@ -64,7 +64,7 @@ class OnboardingFirst extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const ChoosePathScreen()),
+              MaterialPageRoute(builder: (context) =>  ChoosePathScreen(passengerRoleId: 3, driverRoleId: 4,)),
             );
           },
           buttonText: "Get Started",

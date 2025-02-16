@@ -98,7 +98,7 @@ class OnboardingSecond extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const EnterMobileScreen()),
+                    MaterialPageRoute(builder: (context) => EnterMobileScreen()),
                   );
                 },
                 buttonText: "SKIP",

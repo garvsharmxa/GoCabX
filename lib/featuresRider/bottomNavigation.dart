@@ -1,4 +1,5 @@
 import 'package:buzzcab/features/Drawer/Screen/DrawerPage.dart';
+import 'package:buzzcab/featuresRider/screen/mapScreen/mapScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:buzzcab/featuresRider/screen/bookRides/ridebook_page.dart';
@@ -19,7 +20,7 @@ class _RiderNavigationMenuState extends State<RiderNavigationMenu> {
   final List<Widget> _screens = [
     const HomeScreen(),
     const SaveRide(),
-    const RidebookPage(),
+    MapScreen(),
     const RiderSetting(),
     const DrawerPage(),
   ];

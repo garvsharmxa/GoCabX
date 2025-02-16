@@ -1,34 +1,71 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:buzzcab/featuresDriver/CabBookingFlow/Screens/RideDetails.dart';
+import 'package:buzzcab/featuresRider/screen/CabBookingFlow/Screens/RideDetails.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as loc;
 import 'package:http/http.dart' as http;
+import '../../../featuresDriver/home/widgets/nextScreenButton.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
-
   @override
   State<MapScreen> createState() => _MapScreenState();
 }
 
 class _MapScreenState extends State<MapScreen> {
   final Completer<GoogleMapController> _mapController = Completer();
-  GoogleMapController? _controller;
-  loc.Location _location = loc.Location();
+  final loc.Location _location = loc.Location();
   LatLng? selectedLocation;
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _pickupController = TextEditingController();
+  TextEditingController _dropController = TextEditingController();
   List<dynamic> _suggestions = [];
+  LatLng? currentLocation; // Add this variable
   Marker? _selectedMarker;
-
+  String _searchingFor = "pickup";
   static const String googleApiKey = "AIzaSyB_BCq0oZsuBcUYWs_yS2RlRaKTJL2-5XM";
-
+  final Set<Polyline> _polylines = {};
+  LatLng? pickupLocation;
+  LatLng? dropLocation;
   @override
   void initState() {
     super.initState();
     _getCurrentLocation();
   }
+
+  void _selectSuggestion(String placeId) async {
+    final String url = "https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$googleApiKey";
+    try {
+      final response = await http.get(Uri.parse(url));
+      final jsonData = json.decode(response.body);
+
+      if (jsonData["status"] == "OK") {
+        final location = jsonData["result"]["geometry"]["location"];
+        LatLng newLocation = LatLng(location["lat"], location["lng"]);
+
+        setState(() {
+          if (_searchingFor == "pickup") {
+            _pickupController.text = jsonData["result"]["formatted_address"];
+            pickupLocation = newLocation;
+            _updateMarker(newLocation, isPickup: true);
+          } else {
+            _dropController.text = jsonData["result"]["formatted_address"];
+            dropLocation = newLocation;
+            _updateMarker(newLocation, isPickup: false);
+          }
+          _suggestions = [];
+        });
+
+        _moveCamera(newLocation);
+        if (pickupLocation != null && dropLocation != null) {
+          _drawRoute();
+        }
+      }
+    } catch (e) {
+      print("Error fetching location details: $e");
+    }
+  }
+
 
   Future<void> _getCurrentLocation() async {
     bool _serviceEnabled = await _location.serviceEnabled();
@@ -43,30 +80,40 @@ class _MapScreenState extends State<MapScreen> {
       if (_permissionGranted != loc.PermissionStatus.granted) return;
     }
 
-    _location.getLocation().then((loc.LocationData currentLocation) {
-      if (currentLocation.latitude != null &&
-          currentLocation.longitude != null) {
-        LatLng userLocation =
-            LatLng(currentLocation.latitude!, currentLocation.longitude!);
+    try {
+      final loc.LocationData locationData = await _location.getLocation();
+
+      if (locationData.latitude != null && locationData.longitude != null) {
+        LatLng userLocation = LatLng(locationData.latitude!, locationData.longitude!);
+
         setState(() {
-          selectedLocation = userLocation;
-          _updateMarker(userLocation);
+          currentLocation = userLocation; // Store the current location
+          _updateMarker(userLocation, isPickup: true); // Add isPickup argument
         });
-        _moveCamera(userLocation);
+
+        _moveCamera(userLocation); // Move the camera to the user's location
       }
-    });
+    } catch (e) {
+      print("Error getting location: $e");
+    }
   }
 
-  Future<void> _moveCamera(LatLng position) async {
-    final GoogleMapController controller = await _mapController.future;
-    controller.animateCamera(CameraUpdate.newLatLngZoom(position, 16));
+  void _fetchPickupSuggestions(String value) {
+    _fetchSuggestions(value, "pickup");
   }
 
-  Future<void> _fetchSuggestions(String input) async {
+  void _fetchDropSuggestions(String value) {
+    _fetchSuggestions(value, "drop");
+  }
+
+  Future<void> _fetchSuggestions(String input, String fieldType) async {
     if (input.isEmpty) {
       setState(() => _suggestions = []);
       return;
     }
+    setState(() {
+      _searchingFor = fieldType;
+    });
     final String url =
         "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&key=$googleApiKey&components=country:in";
     try {
@@ -82,152 +129,229 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
-  Future<void> _selectSuggestion(String placeId) async {
+  void _updateMarker(LatLng position, {required bool isPickup}) {
+    setState(() {
+      if (isPickup) {
+        pickupLocation = position;
+        _selectedMarker = Marker(
+          markerId: const MarkerId("pickup"),
+          position: position,
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+        );
+      } else {
+        dropLocation = position;
+        _selectedMarker = Marker(
+          markerId: const MarkerId("drop"),
+          position: position,
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+        );
+      }
+    });
+  }
+
+  Future<void> _moveCamera(LatLng position) async {
+    final GoogleMapController controller = await _mapController.future;
+    controller.animateCamera(CameraUpdate.newLatLngZoom(position, 14));
+  }
+
+  Future<void> _drawRoute() async {
+    if (pickupLocation == null || dropLocation == null) return;
     final String url =
-        "https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$googleApiKey";
+        "https://maps.googleapis.com/maps/api/directions/json?origin=${pickupLocation!.latitude},${pickupLocation!.longitude}&destination=${dropLocation!.latitude},${dropLocation!.longitude}&key=$googleApiKey";
     try {
       final response = await http.get(Uri.parse(url));
       final jsonData = json.decode(response.body);
       if (jsonData["status"] == "OK") {
-        final location = jsonData["result"]["geometry"]["location"];
-        LatLng newLocation = LatLng(location["lat"], location["lng"]);
+        final points = jsonData["routes"][0]["overview_polyline"]["points"];
+        List<LatLng> routeCoords = _decodePolyline(points);
         setState(() {
-          selectedLocation = newLocation;
-          _updateMarker(newLocation);
-          _suggestions = [];
+          _polylines.clear();
+          _polylines.add(Polyline(
+            polylineId: const PolylineId("route"),
+            points: routeCoords,
+            color: Colors.blue,
+            width: 5,
+          ));
         });
-        _moveCamera(newLocation);
       }
-    } catch (e) {}
-  }
-
-  void _updateMarker(LatLng position) {
-    setState(() {
-      _selectedMarker = Marker(
-        markerId: MarkerId("selected"),
-        position: position,
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-      );
-    });
-  }
-
-  void _confirmLocation() {
-    if (selectedLocation != null) {
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>RideDetails()));
+    } catch (e) {
+      print("Error fetching route: $e");
     }
+  }
+
+  List<LatLng> _decodePolyline(String poly) {
+    List<LatLng> polylineCoords = [];
+    int index = 0, len = poly.length;
+    int lat = 0, lng = 0;
+    while (index < len) {
+      int b, shift = 0, result = 0;
+      do {
+        b = poly.codeUnitAt(index++) - 63;
+        result |= (b & 0x1F) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      int dlat = (result & 1) != 0 ? ~(result >> 1) : (result >> 1);
+      lat += dlat;
+      shift = 0;
+      result = 0;
+      do {
+        b = poly.codeUnitAt(index++) - 63;
+        result |= (b & 0x1F) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      int dlng = (result & 1) != 0 ? ~(result >> 1) : (result >> 1);
+      lng += dlng;
+      polylineCoords.add(LatLng(lat / 1E5, lng / 1E5));
+    }
+    return polylineCoords;
+  }
+
+  Widget _modalBottomSheetMenu() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30.0),
+          topRight: Radius.circular(30.0),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 10,
+            spreadRadius: 2,
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 10), // Pickup Location Input
+          TextField(
+            controller: _pickupController,
+            onChanged: _fetchPickupSuggestions,
+            decoration: InputDecoration(
+              hintText: "Enter Pickup Location",
+              prefixIcon: const Icon(Icons.location_on, color: Colors.green),
+              filled: true,
+              fillColor: Colors.grey[200],
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+            ),
+          ),
+          const SizedBox(height: 15), // Drop Location Input
+          TextField(
+            controller: _dropController,
+            onChanged: _fetchDropSuggestions,
+            decoration: InputDecoration(
+              hintText: "Enter Drop Location",
+              prefixIcon:
+                  const Icon(Icons.location_on_outlined, color: Colors.red),
+              filled: true,
+              fillColor: Colors.grey[200],
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+            ),
+          ),
+          const SizedBox(height: 15), // Suggestions List
+          if (_suggestions.isNotEmpty)
+            Container(
+              height: 150, // Adjusted height for better visibility
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: ListView.builder(
+                itemCount: _suggestions.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(_suggestions[index]["description"]),
+                    leading: const Icon(Icons.place, color: Colors.blueAccent),
+                    onTap: () =>
+                        _selectSuggestion(_suggestions[index]["place_id"]),
+                  );
+                },
+              ),
+            ),
+          const SizedBox(height: 10), // Confirm Ride Button
+          Nextscreenbutton(
+            onPressed: () {
+              if (pickupLocation != null && dropLocation != null) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => RideDetails(
+                      LocationA: pickupLocation!,
+                      LocationB: dropLocation!,
+                    ),
+                  ),
+                );
+              }
+              else {
+                // Show an error message if locations are not selected
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Please select both pickup and drop locations")),
+                );
+              }
+            },
+            buttonText: "Confirm Ride",
+          )
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Choose Location"),
-        backgroundColor: Colors.white,
-      ),
-      body: Stack(
-        children: [
-          GoogleMap(
-            onMapCreated: (controller) {
-              _mapController.complete(controller);
-              _controller = controller;
-            },
-            initialCameraPosition: CameraPosition(
-              target: selectedLocation ?? LatLng(28.6139, 77.2090),
-              zoom: 14,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            GoogleMap(
+              onMapCreated: (controller) {
+                _mapController.complete(controller);
+              },
+              myLocationEnabled: true,
+              markers: _selectedMarker != null ? {_selectedMarker!} : {},
+              polylines: _polylines,
+              initialCameraPosition: CameraPosition(
+                target: currentLocation ?? const LatLng(37.7749, -122.4194), // Default to San Francisco
+                zoom: 12,
+              ),
             ),
-            myLocationEnabled: true,
-            onTap: (LatLng position) {
-              setState(() {
-                selectedLocation = position;
-                _updateMarker(position);
-              });
-            },
-            onCameraMove: (CameraPosition position) {
-              setState(() {
-                selectedLocation =
-                    position.target; // Update marker position dynamically
-              });
-            },
-            onCameraIdle: () {
-              if (selectedLocation != null) {
-                _updateMarker(
-                    selectedLocation!); // Confirm marker when movement stops
-              }
-            },
-            markers: _selectedMarker != null ? {_selectedMarker!} : {},
-          ),
-          Positioned(
-            top: 10,
-            left: 15,
-            right: 15,
-            child: Column(
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 15,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
+            Positioned(
+              top: 20,
+              left: 20,
+              child: GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: const BoxDecoration(
                     color: Colors.white,
+                    shape: BoxShape.circle,
                     boxShadow: [
-                      BoxShadow(color: Colors.black26, blurRadius: 10)
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: 10,
-                      ),
-                      TextField(
-                        controller: _searchController,
-                        decoration: InputDecoration(
-                          hintText: "Search location...",
-                          border: InputBorder.none,
-                          enabledBorder: InputBorder
-                              .none, // Ensures no border when enabled
-                          focusedBorder: InputBorder
-                              .none, // Ensures no border when focused
-                          suffixIcon:
-                              Icon(Icons.search, color: Colors.blueAccent),
-                        ),
-                        onChanged: _fetchSuggestions,
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 4,
+                        spreadRadius: 1,
                       ),
                     ],
                   ),
+                  child: const Icon(Icons.arrow_back, color: Colors.black),
                 ),
-                if (_suggestions.isNotEmpty)
-                  Container(
-                    margin: EdgeInsets.only(top: 5),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(color: Colors.black26, blurRadius: 5)
-                      ],
-                    ),
-                    child: Column(
-                      children: _suggestions.map((suggestion) {
-                        return ListTile(
-                          title: Text(suggestion["description"]),
-                          onTap: () =>
-                              _selectSuggestion(suggestion["place_id"]),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-              ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Colors.blueAccent,
-        icon: Icon(Icons.check, color: Colors.white),
-        label: Text("Confirm Location"),
-        onPressed: _confirmLocation,
-      ),
+      bottomSheet: _modalBottomSheetMenu(),
     );
   }
 }
