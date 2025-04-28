@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class UtilsButton extends StatefulWidget {
   final String text;
-  final Function press;
+  final VoidCallback press; // Change Function to VoidCallback
   const UtilsButton({super.key, required this.text, required this.press});
 
   @override
@@ -18,10 +18,10 @@ class _UtilsButtonState extends State<UtilsButton> {
         : Colors.black;
     Size size = MediaQuery.of(context).size;
     return  Padding(
-        padding: const EdgeInsets.only(right: 15, left: 15.0, bottom: 25),
-        child: InkWell(
-          onTap: () => widget.press,
-          child:Container(
+      padding: const EdgeInsets.only(right: 15, left: 15.0, bottom: 25),
+      child: InkWell(
+        onTap: widget.press, // No more type issues
+        child: Container(
           height: 50,
           width: size.width,
           decoration: BoxDecoration(

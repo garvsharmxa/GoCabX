@@ -33,7 +33,7 @@
             android:value="2" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyD01vjvJ_Bae02YHEaqIjnvm1WKGaFrsvM" />
+            android:value="AIzaSyB_BCq0oZsuBcUYWs_yS2RlRaKTJL2-5XM" />
     </application>
 
     <!-- Permissions for camera and storage access -->

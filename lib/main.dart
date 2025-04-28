@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
     final Color secondaryColor = const Color(0xFF211F96); // Secondary color
 
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'BuzzCab',
       theme: ThemeData(
         textTheme: GoogleFonts.montserratTextTheme(), // Use Google Fonts
         colorScheme: ColorScheme.fromSeed(

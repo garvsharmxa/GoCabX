@@ -127,7 +127,7 @@ class _DrawerPageState extends State<DrawerPage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            SizedBox(
+                            const SizedBox(
                               width: 10,
                             ),
                             // Use the SvgPicture returned by _getSvgForButton directly
@@ -165,7 +165,7 @@ class _DrawerPageState extends State<DrawerPage> {
                     style: TextStyle(
                         color: textColor, fontWeight: FontWeight.bold),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   CupertinoSwitch(
                     value: _isSwitchOn,
                     activeColor: Colors.green, // Color when ON
@@ -198,7 +198,7 @@ class _DrawerPageState extends State<DrawerPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
                       // Use the SvgPicture returned by _getSvgForButton directly

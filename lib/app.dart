@@ -1,32 +1,29 @@
-import 'package:buzzcab/featuresRider/screen/mapScreen/mapScreen.dart';
+import 'package:buzzcab/features/onboradingScreen/onboardingFirst.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'featuresDriver/onboradingScreen/onboardingFirst.dart';
 import 'featuresDriver/utils/constants/text_strings.dart';
 import 'featuresDriver/utils/device/web_material_scroll.dart';
 import 'featuresDriver/utils/theme/theme.dart';
-import 'featuresRider/bottomNavigation.dart';
 
 class App extends StatelessWidget {
-  const App({Key? key}) : super(key: key);
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: TTexts.appName,
-      themeMode: ThemeMode.system, // Automatically adapts to system settings
-      theme: TAppTheme.lightTheme, // Light theme configuration
-      darkTheme: TAppTheme.darkTheme, // Dark theme configuration
+      themeMode: ThemeMode.system,
+      theme: TAppTheme.lightTheme,
+      darkTheme: TAppTheme.darkTheme,
       debugShowCheckedModeBanner: false,
       scrollBehavior: MyCustomScrollBehavior(),
-      home: _getInitialScreen(), // Centralized control for home screen
+      home: _getInitialScreen(),
     );
   }
 
-  /// Determines the initial screen dynamically
   Widget _getInitialScreen() {
     try {
-      return const OnboardingFirst(); // Change this to any screen when needed
+      return OnboardingFirst();
     } catch (e) {
       debugPrint("Error loading OnboardingFirst: $e");
       return const Scaffold(

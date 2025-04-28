@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../Constant/Utils_Button.dart';
+import '../../featuresRider/screen/Saved Addresses/Screen/SavedAddresses.dart';
 
 class SaveRide extends StatefulWidget {
   const SaveRide({super.key});
@@ -58,9 +59,13 @@ class _SaveRideState extends State<SaveRide> {
           ],
         ),
       ),
-      bottomNavigationBar: UtilsButton(
+      bottomNavigationBar:
+      UtilsButton(
         text: 'ADD SAVED PLACES',
-        press: () {},
+        press: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => SavedAddresses()));
+        },
       ),
     );
   }
