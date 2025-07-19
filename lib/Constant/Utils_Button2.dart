@@ -1,5 +1,6 @@
-import 'package:buzzcab/featuresDriver/utils/constants/colors.dart';
 import 'package:flutter/material.dart';
+
+import '../featuresDriver/utils/constants/colors.dart';
 
 class UtilsButton2 extends StatefulWidget {
   final String text;

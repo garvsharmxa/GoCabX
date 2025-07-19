@@ -6,7 +6,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as loc;
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
-import '../../../featuresDriver/home/widgets/nextScreenButton.dart';
 
 class MapController extends GetxController {
   final Completer<GoogleMapController> mapController = Completer();

@@ -1,5 +1,6 @@
-import 'package:buzzcab/featuresDriver/utils/constants/colors.dart';
 import 'package:flutter/material.dart';
+
+import '../common/widgets/colors/color.dart';
 
 class UtilsButton extends StatefulWidget {
   final String text;
@@ -25,7 +26,7 @@ class _UtilsButtonState extends State<UtilsButton> {
           height: 50,
           width: size.width,
           decoration: BoxDecoration(
-              color: TColors.utilsButton,
+              color: AppColors.primary,
               borderRadius: BorderRadius.circular(10)),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,

@@ -1,3 +1,4 @@
+import 'package:buzzcab/common/widgets/colors/color.dart';
 import 'package:buzzcab/featuresDriver/registration/rider_registration/UploadDocPage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -103,8 +104,8 @@ class _DriverRegStep1State extends State<DriverRegStep1> {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: isSelected
-                  ? [Colors.black, const Color(0xff1B8678)]
-                  : [const Color(0xffE9F4F3), const Color(0xffE9F4F3)],
+                  ? [AppColors.secondary, AppColors.primary]
+                  : [Colors.grey.shade300, Colors.grey.shade200],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
             ),

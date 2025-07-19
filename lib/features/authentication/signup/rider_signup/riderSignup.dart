@@ -1,4 +1,5 @@
-import 'package:buzzcab/Constant/base_url.dart';
+import 'package:buzzcab/app.dart';
+import 'package:buzzcab/common/widgets/colors/color.dart';
 import 'package:buzzcab/common/widgets/textfield/buzzcabTextField.dart';
 import 'package:buzzcab/features/authentication/login/screens/rider_login/riderLogin.dart';
 import 'package:buzzcab/featuresDriver/registration/rider_registration/driverRegStep1.dart';
@@ -21,108 +22,12 @@ class _RiderSignupScreenState extends State<RiderSignupScreen> {
   final TextEditingController _emailController = TextEditingController();
   bool termsAndConditions = false;
 
-  int? DriverRoleId;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadPassengerRoleId();
-  }
-
-  Future<void> _loadPassengerRoleId() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      DriverRoleId =
-          prefs.getInt('driver_role_id'); // Default to 3 if not found
-    });
-  }
-
-  Future<void> _registerUser() async {
-    String mobile = _mobileController.text.trim();
-
-    // Remove country code if present
-    if (mobile.startsWith("+91")) {
-      mobile = mobile.substring(3);
-    }
-
-    // Remove any non-numeric characters
-    mobile = mobile.replaceAll(RegExp(r'\D'), '');
-
-    if (mobile.isEmpty || mobile.length != 10) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter a valid 10-digit mobile number")),
-      );
-      return;
-    }
-
-    final String apiUrl = BaseUrl.register;
-
-    Map<String, dynamic> requestBody = {
-      "roleId": DriverRoleId,
-      "mobile": mobile,
-      "email": _emailController.text.trim(),
-      "firstName": _nameController.text.split(" ")[0],
-      "lastName": _nameController.text.split(" ").length > 1
-          ? _nameController.text.split(" ")[1]
-          : ""
-    };
-
-    try {
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(requestBody),
-      );
-
-      print("Response Status Code: ${response.statusCode}");
-      print("Response Body: ${response.body}");
-
-      final Map<String, dynamic> responseData = jsonDecode(response.body);
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Registration successful!")),
-        );
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const DriverRegStep1()),
-        );
-      } else {
-        String errorMessage = "Registration failed. Please try again.";
-
-        if (responseData.containsKey("message")) {
-          if (responseData["message"].toString().toLowerCase().contains("already exists")) {
-            errorMessage = "User with this mobile number or email is already registered. Try logging in instead.";
-          } else if (responseData["message"].toString().toLowerCase().contains("invalid email")) {
-            errorMessage = "Invalid email address. Please enter a valid email.";
-          } else if (responseData["message"].toString().toLowerCase().contains("invalid mobile")) {
-            errorMessage = "Invalid mobile number. Please enter a valid 10-digit number.";
-          } else {
-            errorMessage = responseData["message"];
-          }
-        }
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(errorMessage)),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("An error occurred: $e. Please check your internet connection and try again.")),
-      );
-      print("Error: $e");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final isDarkMode =
         MediaQuery.of(context).platformBrightness == Brightness.dark;
     final Color backgroundColor = isDarkMode ? Colors.black : Colors.white;
-    final Color primaryColor =
-        isDarkMode ? Colors.blueAccent : Color(0xFF211F96);
+
     final Color textColor = isDarkMode ? Colors.white : Colors.black;
     final Color borderColor = isDarkMode ? Colors.white : Colors.black;
 
@@ -169,6 +74,7 @@ class _RiderSignupScreenState extends State<RiderSignupScreen> {
                 BuzzcabTextField(
                     labelText: "Mobile Number",
                     controller: _mobileController,
+                    hintText: "Enter Your Mobile Number",
                     isDarkMode: isDarkMode,
                     keyboardType: TextInputType.phone),
                 BuzzcabTextField(
@@ -196,7 +102,7 @@ class _RiderSignupScreenState extends State<RiderSignupScreen> {
                           border: Border.all(width: 2, color: borderColor),
                         ),
                         child: termsAndConditions
-                            ? Icon(Icons.check, color: primaryColor, size: 20.0)
+                            ? Icon(Icons.check, color:  AppColors.primary, size: 20.0)
                             : null,
                       ),
                     ),
@@ -211,7 +117,7 @@ class _RiderSignupScreenState extends State<RiderSignupScreen> {
                             TextSpan(
                                 text: 'Terms & Conditions',
                                 style: GoogleFonts.poppins(
-                                    color: primaryColor,
+                                    color: AppColors.primary,
                                     decoration: TextDecoration.underline)),
                             TextSpan(
                                 text: ' and ',
@@ -220,7 +126,7 @@ class _RiderSignupScreenState extends State<RiderSignupScreen> {
                             TextSpan(
                                 text: 'Privacy Policy.',
                                 style: GoogleFonts.poppins(
-                                    color: primaryColor,
+                                    color: AppColors.primary,
                                     decoration: TextDecoration.underline)),
                           ],
                         ),
@@ -232,9 +138,14 @@ class _RiderSignupScreenState extends State<RiderSignupScreen> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: _registerUser,
+                    onPressed: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const DriverRegStep1()),
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryColor,
+                      backgroundColor: AppColors.primary,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0)),
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -268,7 +179,8 @@ class _RiderSignupScreenState extends State<RiderSignupScreen> {
                             TextSpan(
                                 text: 'Log In',
                                 style: GoogleFonts.poppins(
-                                    color: primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                    color: AppColors.primary,
                                     decoration: TextDecoration.underline)),
                           ],
                         ),

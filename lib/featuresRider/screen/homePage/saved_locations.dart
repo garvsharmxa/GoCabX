@@ -88,6 +88,7 @@ class _SavedLocationsScreenState extends State<SavedLocationsScreen> {
 class SavedLocationsCard extends StatelessWidget {
   final String title;
   final String address;
+
   const SavedLocationsCard({
     super.key,
     required this.title,
@@ -96,50 +97,75 @@ class SavedLocationsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
-        width: double.infinity,
-        height: 60,
-        decoration: BoxDecoration(
-          color: Color(0xFFE9E9F5).withOpacity(0.6),
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(7.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: isDark ? Colors.black26 : Colors.black.withOpacity(0.08),
+            blurRadius: 15,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: AppColors.primary.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                title == 'Home' ? Icons.home_rounded :
+                title == 'Work' ? Icons.work_rounded : Icons.location_on_rounded,
+                color: AppColors.primary,
+                size: 24,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.bookmark,
-                        color: AppColors.secondary,
-                        size: 24,
-                      ),
-                      Text(
-                        title,
-                        style: AppTextStyles.label
-                            .copyWith(fontWeight: FontWeight.w700),
-                      ),
-                    ],
+                  Text(
+                    title,
+                    style: AppTextStyles.text.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: isDark ? Colors.white : const Color(0xFF1A1A1A),
+                    ),
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 4),
                   Text(
                     address,
-                    style: AppTextStyles.label,
+                    style: AppTextStyles.caption.copyWith(
+                      color: isDark ? Colors.white60 : const Color(0xFF6B7280),
+                    ),
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
-              Icon(
+            ),
+            IconButton(
+              onPressed: () {},
+              icon: Icon(
                 Icons.more_vert_rounded,
-                size: 14,
+                color: isDark ? Colors.white60 : const Color(0xFF6B7280),
               ),
-            ],
-          ),
-        ));
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 

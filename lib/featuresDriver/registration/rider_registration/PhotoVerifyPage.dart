@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../common/widgets/colors/color.dart';
 import '../../home/widgets/nextScreenButton.dart';
 import 'AadharPage.dart';
 
@@ -107,7 +108,7 @@ class _PhotoVerifyPageState extends State<PhotoVerifyPage> {
                     TextSpan(
                       text: "Lorem",
                       style: GoogleFonts.poppins(
-                        color: const Color(0xFF1F9686),
+                        color: AppColors.primary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

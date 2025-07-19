@@ -25,7 +25,7 @@ class _AddMorePlacesMapScreenState extends State<AddMorePlacesMapScreen> {
             buildingsEnabled: true,
             initialCameraPosition: CameraPosition(
               target: LatLng(37.7749, -122.4194), // Example coordinates
-              zoom: 10,
+              zoom: 14,
             ),
           ),
           Positioned(

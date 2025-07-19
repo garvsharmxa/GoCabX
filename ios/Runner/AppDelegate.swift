@@ -1,5 +1,5 @@
-import UIKit
 import Flutter
+import UIKit
 import GoogleMaps
 
 @main
@@ -13,4 +13,3 @@ import GoogleMaps
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }
-

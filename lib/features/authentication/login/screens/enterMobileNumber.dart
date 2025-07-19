@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:buzzcab/Constant/base_url.dart';
 import 'package:buzzcab/common/widgets/colors/color.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -25,77 +24,6 @@ class EnterMobileController extends GetxController {
     passengerRoleId.value = prefs.getInt('passenger_role_id') ?? 3;
   }
 
-  void sendOtp() async {
-    String mobileNumber = mobileController.text.trim();
-    if (mobileNumber.length != 10) {
-      Get.snackbar('Error', 'Please enter a 10-digit valid phone number',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: AppColors.primary,
-          colorText: Colors.white);
-      return;
-    }
-
-    try {
-      final response = await http.post(
-        Uri.parse(BaseUrl.register),
-        headers: {
-          'Authorization': '',
-          'Content-Type': 'application/json',
-          'slug': 'stage',
-        },
-        body: jsonEncode({
-          "roleId": passengerRoleId.value,
-          "mobile": mobileNumber,
-        }),
-      );
-
-      final responseData = jsonDecode(response.body);
-      if (response.statusCode == 200 && responseData['success']) {
-        String sessionId = responseData['data']['sessionId'];
-        Get.to(
-            () => OtpScreen(mobileNumber: mobileNumber, sessionId: sessionId));
-      } else if (responseData['message'] == "Mobile number already exists.") {
-        resendOtp(mobileNumber);
-      } else {
-        Get.snackbar('Error', 'Failed to send OTP: ${responseData['message']}',
-            snackPosition: SnackPosition.TOP,
-            backgroundColor: AppColors.primary,
-            colorText: Colors.white);
-      }
-    } catch (e) {
-      Get.snackbar('Error', 'Error sending OTP. Please try again.',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: AppColors.primary,
-          colorText: Colors.white);
-    }
-  }
-
-  void resendOtp(String mobileNumber) async {
-    try {
-      final resendResponse = await http.post(
-        Uri.parse(BaseUrl.sendOtp),
-        headers: {'Authorization': '', 'Content-Type': 'application/json'},
-        body: jsonEncode({"mobile": mobileNumber}),
-      );
-
-      final resendData = jsonDecode(resendResponse.body);
-      if (resendResponse.statusCode == 200) {
-        String sessionId = resendData['data']['sessionId'];
-        Get.to(
-            () => OtpScreen(mobileNumber: mobileNumber, sessionId: sessionId));
-      } else {
-        Get.snackbar('Error', 'Failed to resend OTP: ${resendData['message']}',
-            snackPosition: SnackPosition.TOP,
-            backgroundColor: AppColors.primary,
-            colorText: Colors.white);
-      }
-    } catch (e) {
-      Get.snackbar('Error', 'Error resending OTP. Please try again.',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: AppColors.primary,
-          colorText: Colors.white);
-    }
-  }
 }
 
 class EnterMobileScreen extends StatelessWidget {
@@ -215,7 +143,9 @@ class EnterMobileScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Nextscreenbutton(
-              onPressed: controller.sendOtp,
+              onPressed: (){
+                Get.to(() => OtpScreen(mobileNumber: "mobileNumber", sessionId: "sessionId"));
+              },
               buttonText: 'Next',
             ),
             const SizedBox(height: 15),

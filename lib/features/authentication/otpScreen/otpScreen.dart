@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:buzzcab/Constant/base_url.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,84 +15,15 @@ class OtpController extends GetxController {
   var isResendingOtp = false.obs;
   var sessionId = ''.obs;
   final String mobileNumber;
-  VoidCallback? get verifyOtpCallback => isLoading.value ? null : verifyOtp;
 
   OtpController({required this.mobileNumber, required String sessionId}) {
     this.sessionId.value = sessionId;
   }
 
-  Future<void> _storeToken(String token) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('auth_token', token);
-  }
 
-  Future<void> sendOtp() async {
-    isResendingOtp(true);
-    try {
-      final response = await http.post(
-        Uri.parse(BaseUrl.sendOtp),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'mobile': mobileNumber}),
-      );
-      final responseData = jsonDecode(response.body);
-      if (responseData['success'] == true) {
-        sessionId.value = responseData['data']['sessionId'];
-        Get.snackbar("Success", "OTP sent successfully",
-            backgroundColor: AppColors.primary, colorText: Colors.white);
-      } else {
-        Get.snackbar("Error", responseData['message'] ?? 'Failed to send OTP',
-            backgroundColor: AppColors.primary, colorText: Colors.white);
-      }
-    } catch (e) {
-      Get.snackbar("Error", "Failed to send OTP");
-    } finally {
-      isResendingOtp(false);
-    }
-  }
 
-  Future<void> verifyOtp() async {
-    if (otp.value.length != 6 || !RegExp(r'^[0-9]+$').hasMatch(otp.value)) {
-      Get.snackbar("Error", "Please enter a valid 6-digit numeric OTP",
-          backgroundColor: AppColors.primary, colorText: Colors.white);
-      return;
-    }
 
-    if (sessionId.isEmpty) {
-      Get.snackbar("Error", "Session ID missing, please resend OTP",
-          backgroundColor: AppColors.primary, colorText: Colors.white);
-      return;
-    }
 
-    isLoading(true);
-    try {
-      final response = await http.post(
-        Uri.parse(BaseUrl.verifyOtp),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'mobile': mobileNumber,
-          'otp': int.parse(otp.value),
-          'sessionId': sessionId.value,
-        }),
-      );
-      final responseData = jsonDecode(response.body);
-      if (responseData['success'] == true) {
-        final token = responseData['data']['token'];
-        if (token != null) await _storeToken(token);
-        Get.offAll(() => const ProfileSetupScreen());
-        Get.snackbar("Success", "OTP Verified Successfully!",
-            backgroundColor: AppColors.primary, colorText: Colors.white);
-      } else {
-        Get.snackbar(
-            "Error", responseData['message'] ?? 'OTP verification failed',
-            backgroundColor: AppColors.primary, colorText: Colors.white);
-      }
-    } catch (error) {
-      Get.snackbar("Error", "An error occurred while verifying OTP",
-          backgroundColor: AppColors.primary, colorText: Colors.white);
-    } finally {
-      isLoading(false);
-    }
-  }
 }
 
 class OtpScreen extends StatelessWidget {
@@ -142,9 +72,7 @@ class OtpScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Obx(() => GestureDetector(
-                  onTap: controller.isResendingOtp.value
-                      ? null
-                      : controller.sendOtp,
+                  onTap: (){},
                   child: Text(
                     controller.isResendingOtp.value
                         ? "Resending..."
@@ -157,7 +85,9 @@ class OtpScreen extends StatelessWidget {
                 )),
             const Spacer(),
             Obx(() => Nextscreenbutton(
-                  onPressed: controller.verifyOtpCallback ?? () {},
+                  onPressed:  () {
+                    Get.offAll(() => const ProfileSetupScreen());
+                  },
                   buttonText:
                       controller.isLoading.value ? "Verifying..." : "Verify",
                 )),

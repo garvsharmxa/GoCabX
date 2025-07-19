@@ -1,3 +1,4 @@
+import 'package:buzzcab/common/widgets/colors/color.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -41,7 +42,7 @@ class _UploadDocPageState extends State<UploadDocPage> {
                     TextSpan(
                       text: "Lorem",
                       style: GoogleFonts.poppins(
-                        color: const Color(0xFF1F9686),
+                        color: AppColors.primary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

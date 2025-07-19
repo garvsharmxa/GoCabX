@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../rideRequest/ride_request_homepage.dart';
-
 class DriverRegistrationComp extends StatefulWidget {
   const DriverRegistrationComp({super.key});
 
@@ -15,70 +13,91 @@ class DriverRegistrationComp extends StatefulWidget {
 class _DriverRegistrationCompState extends State<DriverRegistrationComp> {
   @override
   Widget build(BuildContext context) {
-    final isDarkMode =
-        MediaQuery.of(context).platformBrightness == Brightness.dark;
+    final isDarkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    final textColor = isDarkMode ? Colors.white : Colors.black;
+
     return Scaffold(
       backgroundColor: isDarkMode ? Colors.black : Colors.white,
       appBar: AppBar(
-        backgroundColor: isDarkMode ? Colors.black : Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
+        iconTheme: IconThemeData(color: textColor),
       ),
-      body:  SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Registration Completed!",
-              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 22.5),
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/icons/success.gif',
+
+                ),
+                const SizedBox(height: 40),
+                Text(
+                  "Registration Completed!",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: textColor,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  "You're Ready to Hit the Road as a BuzzCab Roadie!",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ],
             ),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              "You’re Ready to Go on as a Roadie Now!",
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17.5),
-            ),
-            SizedBox(
-              height: 50,
-            ),
-            Center(child: SvgPicture.asset("assets/images/content/Group 547.svg"))
-          ],
+          ),
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(left: 20,right: 20,bottom: 20.0),
-        child: Container(
-          height: 40,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: isDarkMode
-                  ? [const Color(0xFF211F96), const Color(0xFF211F96)]
-                  : [const Color(0xFF211F96), const Color(0xFF211F96)],
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-            ),
-            borderRadius: BorderRadius.circular(8.0),
-          ),
+        padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+        child: SizedBox(
+          height: 50,
           child: ElevatedButton(
-            onPressed: (){
+            onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => NavigationMenu()),
+                MaterialPageRoute(builder: (context) => const NavigationMenu()),
               );
             },
             style: ElevatedButton.styleFrom(
+              elevation: 5,
+              padding: EdgeInsets.zero,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
               backgroundColor: Colors.transparent,
               shadowColor: Colors.transparent,
-              padding: EdgeInsets.zero,
             ),
-            child: Center(
-              child: Text(
-                "GO TO HOME",
-                style: GoogleFonts.montserrat(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
-                  color: isDarkMode ? Colors.grey[200] : Colors.white,
+            child: Ink(
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF211F96), Color(0xFF473FDD)],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                ),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Container(
+                alignment: Alignment.center,
+                child: Text(
+                  "GO TO HOME",
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    letterSpacing: 1.2,
+                  ),
                 ),
               ),
             ),

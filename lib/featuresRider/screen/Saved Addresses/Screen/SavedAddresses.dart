@@ -5,9 +5,30 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:get/get.dart';
 import '../../../../Service/Controllers/saved_addresses_controller.dart';
 
-class SavedAddresses extends StatelessWidget {
-  final SavedAddressesController controller =
-  Get.put(SavedAddressesController());
+class SavedAddresses extends StatefulWidget {
+  @override
+  _SavedAddressesState createState() => _SavedAddressesState();
+}
+
+class _SavedAddressesState extends State<SavedAddresses> {
+  final SavedAddressesController controller = Get.put(SavedAddressesController());
+  GoogleMapController? _mapController;
+
+  @override
+  void dispose() {
+    // Properly dispose of the map controller
+    _mapController?.dispose();
+    // Remove the controller when disposing
+    Get.delete<SavedAddressesController>();
+    super.dispose();
+  }
+
+  void _onMapCreated(GoogleMapController mapController) {
+    if (!controller.mapController.isCompleted) {
+      controller.mapController.complete(mapController);
+      _mapController = mapController;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,50 +46,85 @@ class SavedAddresses extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          Obx(() => GoogleMap(
-            onMapCreated: (controller) =>
-                this.controller.mapController.complete(controller),
-            initialCameraPosition: CameraPosition(
-                target: controller.currentLocation.value, zoom: 15),
-            markers: controller.selectedMarker.value != null
-                ? {controller.selectedMarker.value!}
-                : {},
-            myLocationEnabled: true,
-            onTap: (LatLng position) {
-              controller.currentLocation.value = position;
-              controller.setMarker(position);
-              controller.getAddressFromLatLng(position);
-              controller.saveLocation(position);
-            },
-          )),
+          // Use a Container with a key to ensure proper widget lifecycle
+          Container(
+            key: const ValueKey('google_map_container'),
+            child: Obx(() => GoogleMap(
+              onMapCreated: _onMapCreated,
+              initialCameraPosition: CameraPosition(
+                  target: controller.currentLocation.value, zoom: 15),
+              markers: controller.selectedMarker.value != null
+                  ? {controller.selectedMarker.value!}
+                  : {},
+              myLocationEnabled: true,
+              myLocationButtonEnabled: false, // Disable default button to avoid conflicts
+              compassEnabled: true,
+              mapToolbarEnabled: false,
+              zoomControlsEnabled: false,
+              onTap: (LatLng position) {
+                controller.currentLocation.value = position;
+                controller.setMarker(position);
+                controller.getAddressFromLatLng(position);
+                controller.saveLocation(position);
+              },
+            )),
+          ),
           Positioned(
             top: 15,
             left: 15,
             right: 15,
             child: Column(
               children: [
-                TextField(
-                  controller: controller.searchController,
-                  onChanged: controller.fetchSuggestions,
-                  decoration: InputDecoration(
-                    hintText: "Search location...",
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide.none),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 4,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: TextField(
+                    controller: controller.searchController,
+                    onChanged: controller.fetchSuggestions,
+                    decoration: InputDecoration(
+                      hintText: "Search location...",
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide.none),
+                      prefixIcon: Icon(Icons.search, color: Colors.grey),
+                    ),
                   ),
                 ),
                 Obx(() => controller.suggestions.isNotEmpty
                     ? Container(
-                  color: Colors.white,
+                  margin: EdgeInsets.only(top: 5),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 4,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
                   child: ListView.builder(
                     shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
                     itemCount: controller.suggestions.length,
                     itemBuilder: (context, index) {
                       return ListTile(
+                        leading: Icon(Icons.location_on, color: AppColors.primary),
                         title: Text(
-                            controller.suggestions[index]["description"]),
+                          controller.suggestions[index]["description"],
+                          style: TextStyle(fontSize: 14),
+                        ),
                         onTap: () => controller.selectLocation(
                             controller.suggestions[index]["place_id"]),
                       );
@@ -83,29 +139,42 @@ class SavedAddresses extends StatelessWidget {
             bottom: 170,
             left: 20,
             right: 20,
-            child: Obx(() => ElevatedButton.icon(
-              onPressed: controller.useCurrentLocation,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: AppColors.primary,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
+            child: Obx(() => Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
+                  ),
+                ],
               ),
-              icon: controller.isLoading.value
-                  ? const SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(
-                    strokeWidth: 2, color: AppColors.primary),
-              )
-                  : const Icon(Icons.my_location),
-              label: Text(
-                controller.isLoading.value
-                    ? "Fetching location..."
-                    : "Use Current Location",
-                style: const TextStyle(
-                    fontSize: 16, fontWeight: FontWeight.w500),
+              child: ElevatedButton.icon(
+                onPressed: controller.isLoading.value ? null : controller.useCurrentLocation,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: AppColors.primary,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  elevation: 0,
+                ),
+                icon: controller.isLoading.value
+                    ? const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                      strokeWidth: 2, color: AppColors.primary),
+                )
+                    : const Icon(Icons.my_location),
+                label: Text(
+                  controller.isLoading.value
+                      ? "Fetching location..."
+                      : "Use Current Location",
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w500),
+                ),
               ),
             )),
           ),
@@ -137,6 +206,8 @@ class SavedAddresses extends StatelessWidget {
                           controller.selectedAddress.value,
                           style: GoogleFonts.poppins(
                               fontSize: 16, fontWeight: FontWeight.w600),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         )),
                       ),
                     ],
@@ -148,9 +219,13 @@ class SavedAddresses extends StatelessWidget {
                       onPressed: () => _showSaveLocationBottomSheet(context),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
+                        padding: EdgeInsets.symmetric(vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
                       child: const Text("CONFIRM LOCATION",
-                          style: TextStyle(color: Colors.white, fontSize: 16)),
+                          style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                     ),
                   ),
                 ],
@@ -169,57 +244,86 @@ class SavedAddresses extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
-      ),
+      backgroundColor: Colors.transparent,
       builder: (context) {
         return Padding(
           padding: EdgeInsets.only(
               bottom: MediaQuery.of(context).viewInsets.bottom),
           child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
             padding: const EdgeInsets.all(20),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Center(
+                  child: Container(
+                    width: 50,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 15),
+                Center(
                   child: Text(
                     "Save Address",
                     style: GoogleFonts.poppins(
-                        fontSize: 18, fontWeight: FontWeight.bold),
+                        fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ),
-                const SizedBox(height: 15),
+                const SizedBox(height: 20),
                 TextField(
                   controller: titleController,
                   decoration: InputDecoration(
                     labelText: "Title (e.g., Home, Work)",
+                    prefixIcon: Icon(Icons.label_outline, color: AppColors.primary),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10)),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: AppColors.primary, width: 2),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 15),
                 TextField(
                   controller: phoneController,
                   keyboardType: TextInputType.phone,
                   decoration: InputDecoration(
                     labelText: "Phone Number",
+                    prefixIcon: Icon(Icons.phone_outlined, color: AppColors.primary),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10)),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: AppColors.primary, width: 2),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 15),
                 Obx(() => TextField(
                   readOnly: true,
                   controller: TextEditingController(
                       text: controller.selectedAddress.value),
                   decoration: InputDecoration(
                     labelText: "Address",
+                    prefixIcon: Icon(Icons.location_on_outlined, color: AppColors.primary),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10)),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: AppColors.primary, width: 2),
+                    ),
                   ),
+                  maxLines: 2,
                 )),
-                const SizedBox(height: 20),
+                const SizedBox(height: 25),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -228,7 +332,7 @@ class SavedAddresses extends StatelessWidget {
                       String phone = phoneController.text.trim();
                       if (title.isEmpty || phone.isEmpty) {
                         Get.snackbar("Error", "All fields are required!",
-                            snackPosition: SnackPosition.BOTTOM,
+                            snackPosition: SnackPosition.TOP,
                             backgroundColor: Colors.red.withOpacity(0.8),
                             colorText: Colors.white);
                         return;
@@ -236,17 +340,22 @@ class SavedAddresses extends StatelessWidget {
                       controller.saveLocationWithDetails(title, controller.selectedAddress.value, phone);
                       Navigator.pop(context);
                       Get.snackbar("Success", "Location saved successfully!",
-                          snackPosition: SnackPosition.BOTTOM,
+                          snackPosition: SnackPosition.TOP,
                           backgroundColor: Colors.green.withOpacity(0.8),
                           colorText: Colors.white);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
+                      padding: EdgeInsets.symmetric(vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                     child: const Text("Save Place",
-                        style: TextStyle(color: Colors.white, fontSize: 16)),
+                        style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                   ),
                 ),
+                SizedBox(height: 10),
               ],
             ),
           ),

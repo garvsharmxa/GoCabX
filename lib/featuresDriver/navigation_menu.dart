@@ -1,17 +1,9 @@
-import 'package:buzzcab/featuresRider/screen/setting/rider_setting.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-
-import '../features/Drawer/Screen/DrawerPage.dart';
-import 'explore/screens/ExploreScreen.dart';
-
 import 'history/screens/HistoryScreen.dart';
-import 'home/screen/HomeScreen.dart';
-import 'profile/screens/profileScreen.dart';
 import 'rideRequest/ride_request_homepage.dart';
-import 'tools/screens/MyMachine.dart';
-
+import 'package:buzzcab/featuresRider/screen/setting/rider_setting.dart';
 
 class NavigationMenu extends StatelessWidget {
   const NavigationMenu({super.key});
@@ -19,82 +11,132 @@ class NavigationMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(NavigationController());
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      body: Obx(
-        () => IndexedStack(
-          index: controller.selectedIndex.value,
-          children: controller.screens,
+      body: Obx(() => IndexedStack(
+            index: controller.selectedIndex.value,
+            children: controller.screens,
+          )),
+      bottomNavigationBar: Obx(
+        () => Container(
+          height: 80,
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            boxShadow: [
+              BoxShadow(
+                color: isDark ? Colors.black54 : Colors.black12,
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            child: Container(
+              height: 70,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: isDark
+                      ? [const Color(0xFF2a2a2a), const Color(0xFF1a1a1a)]
+                      : [Colors.white, const Color(0xFFf5f5f5)],
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: List.generate(
+                  controller.navItems.length,
+                  (index) => _buildNavItem(
+                    context,
+                    controller,
+                    index,
+                    isDark,
+                  ),
+                ),
+              ),
+            ),
+          ),
         ),
       ),
-      bottomNavigationBar: Obx(
-        () => ClipRRect(
-          borderRadius: BorderRadius.only(
-            
-            topLeft: Radius.circular(22.0),
-            topRight: Radius.circular(22.0)
-          ),
-          child: BottomNavigationBar(
-          
-            currentIndex: controller.selectedIndex.value,
-            onTap: (index) {
-              if (index == 2) {
-                controller.selectedIndex.value = index;
-                
-               
-              } else {
-                controller.selectedIndex.value = index;
-              }
-            },
-            type: BottomNavigationBarType.fixed,
-            
-            selectedItemColor: Theme.of(context).brightness == Brightness.dark
-                ? Colors.white
-                : Colors.black,
-            unselectedItemColor: Theme.of(context).brightness == Brightness.dark
-                ? Colors.grey.shade400
-                : Colors.grey,
-            backgroundColor: Theme.of(context).brightness == Brightness.dark
-                ? Colors.black
-                : const Color(0xFFE6E6E6),
-            showSelectedLabels: true,
-            showUnselectedLabels: true,
-            
-            items: [
-              BottomNavigationBarItem(
-                icon: _buildIconWithBackground(
-                  'assets/icons/homepage/home-variant-outline.svg',
-                  controller.selectedIndex.value == 0,
-                  context,
+    );
+  }
+
+  Widget _buildNavItem(
+    BuildContext context,
+    NavigationController controller,
+    int index,
+    bool isDark,
+  ) {
+    final isSelected = controller.selectedIndex.value == index;
+    final navItem = controller.navItems[index];
+
+    return GestureDetector(
+      onTap: () => controller.selectedIndex.value = index,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(25),
+          color:
+              isSelected ? navItem.color.withOpacity(0.1) : Colors.transparent,
+          border: isSelected
+              ? Border.all(
+                  color: navItem.color.withOpacity(0.3),
+                  width: 1,
+                )
+              : null,
+        ),
+        child: SizedBox(
+          height: 60,
+          width: 60,// Set fixed height to avoid vertical overflow
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center, // Center content
+            children: [
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: isSelected ? navItem.color : Colors.transparent,
+                  shape: BoxShape.circle,
+                  boxShadow: isSelected
+                      ? [
+                          BoxShadow(
+                            color: navItem.color.withOpacity(0.3),
+                            blurRadius: 6,
+                            offset: const Offset(0, 3),
+                          ),
+                        ]
+                      : null,
                 ),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: _buildIconWithBackground(
-                  'assets/icons/homepage/history.svg',
-                  controller.selectedIndex.value == 1,
-                  context,
+                child: SvgPicture.asset(
+                  navItem.assetPath,
+                  colorFilter: ColorFilter.mode(
+                    isSelected
+                        ? Colors.white
+                        : isDark
+                            ? Colors.grey.shade400
+                            : Colors.grey.shade600,
+                    BlendMode.srcIn,
+                  ),
+                  width: 22,
+                  height: 22,
                 ),
-                label: 'History',
               ),
-              BottomNavigationBarItem(
-                icon: _buildCenterButton(context),
-                label: '',
-              ),
-              BottomNavigationBarItem(
-                icon: _buildIconWithBackground(
-                  'assets/icons/homepage/cog-outline.svg',
-                  controller.selectedIndex.value == 3,
-                  context,
+              const SizedBox(height: 2),
+              AnimatedDefaultTextStyle(
+                duration: const Duration(milliseconds: 250),
+                style: TextStyle(
+                  color: isSelected
+                      ? navItem.color
+                      : isDark
+                          ? Colors.grey.shade400
+                          : Colors.grey.shade600,
+                  fontSize: 10,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                 ),
-                label: 'Settings',
-              ),
-              BottomNavigationBarItem(
-                icon: _buildIconWithBackground(
-                  'assets/icons/homepage/account-circle-outline.svg',
-                  controller.selectedIndex.value == 4,
-                  context,
-                ),
-                label: 'Profile',
+                child: Text(navItem.label, overflow: TextOverflow.ellipsis),
               ),
             ],
           ),
@@ -102,59 +144,30 @@ class NavigationMenu extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildIconWithBackground(String assetPath, bool isSelected, BuildContext context) {
-    return Container(
-      decoration: isSelected
-          ? BoxDecoration(
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white
-                  : Colors.black,
-              shape: BoxShape.circle,
-            )
-          : null,
-      padding: const EdgeInsets.all(8.0),
-      child: SvgPicture.asset(
-        assetPath,
-        color: isSelected
-            ? Theme.of(context).brightness == Brightness.dark
-                ? Colors.black
-                : Colors.white
-            : Theme.of(context).brightness == Brightness.dark
-                ? Colors.white
-                : Colors.black,
-      ),
-    );
-  }
-
-  Widget _buildCenterButton(BuildContext context) {
-    return Container(
-      width: 50,
-      height: 50,
-      decoration: BoxDecoration(
-        color: Color(0xFFD4D4D4)
-,
-        shape: BoxShape.circle,
-       
-      ),
-      child: Center(
-        child: SvgPicture.asset(
-          'assets/icons/homepage/map-marker-distance.svg',
-          // color: Colors.white,
-        ),
-      ),
-    );
-  }
 }
 
 class NavigationController extends GetxController {
-  Rx<int> selectedIndex = 0.obs;
+  RxInt selectedIndex = 0.obs;
 
-  final screens = [
+  final List<Widget> screens = [
     const HomeScreen(),
-    const HistoryScreen(),
     const RideRequest(),
     const RiderSetting(),
-     DrawerPage(),
   ];
+
+  final List<NavItem> navItems = [
+    NavItem('assets/icons/homepage/history.svg', 'History', Colors.teal),
+    NavItem(
+        'assets/icons/homepage/map-marker-distance.svg', 'Ride', Colors.green),
+    NavItem('assets/icons/homepage/account-circle-outline.svg', 'Profile',
+        Colors.purple),
+  ];
+}
+
+class NavItem {
+  final String assetPath;
+  final String label;
+  final Color color;
+
+  NavItem(this.assetPath, this.label, this.color);
 }

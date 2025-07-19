@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:buzzcab/common/widgets/colors/color.dart';
 import 'package:buzzcab/common/widgets/texts/appTextStyle.dart';
-import 'package:flutter/material.dart';
+
+import '../../../../features/Drawer/Screen/DrawerPage.dart';
 
 class HomeScreenAppBar extends StatelessWidget {
   const HomeScreenAppBar({
@@ -12,41 +14,98 @@ class HomeScreenAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+      ),
       child: Row(
         children: [
-          const CircleAvatar(
-            radius: 15,
-            backgroundImage: NetworkImage(
-              'https://s3-alpha-sig.figma.com/img/5ec8/8bb7/b0e3d1a1eaed399cc32d8f036c47c01c?Expires=1734307200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=RCWe3aAeCbXNeQBwDf6vEeXaU6vbUyCYwJNGo4Bk2h79gbRnI2ytGL9mW3Tg540v6CVJvkyK2OBvr~7j2Y1j10vanmp2e1I17-DzZ3x87UUs~rZcMOlcV1W13RGlmC9Ab569qmc0hkiup6do7OHkHVQv1XnYZDNNxM9CJridJ3-HFH6622myxqXE6r0q0wNbJ31DjkQFZExkkTdVOmVbCo~kwv3AZTVVZyQkiD5W65okzr4y8ZVTvIitcBCPv3d9YeoQtXyuae37vgczBXD-3MmnxS8nBjdOu9x6XdwGimJ2MJGRO6IBKWHZXsnrkinqVcc~-nxuyrbUZtc00A71rg__',
+          // Profile Avatar with border effect
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(
+                PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) => const DrawerPage(),
+                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                    const begin = Offset(-1.0, 0.0); // Slide in from left
+                    const end = Offset.zero;
+                    const curve = Curves.easeInOut;
+
+                    final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                    final offsetAnimation = animation.drive(tween);
+
+                    return SlideTransition(position: offsetAnimation, child: child);
+                  },
+                ),
+              );
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: AppColors.primary.withOpacity(0.6),
+                  width: 3,
+                ),
+              ),
+              child: const CircleAvatar(
+                radius: 22,
+                backgroundImage: NetworkImage(
+                  'https://garvsharmxa.netlify.app/assets/mypr-modified.png',
+                ),
+              ),
             ),
           ),
-          const Icon(Icons.arrow_drop_down),
           const SizedBox(width: 10),
-          Text(
-            "Welcome, $username 👋🏻",
-            style: AppTextStyles.h6.copyWith(color: AppColors.background),
-          ),
-          const Spacer(),
-          CircleAvatar(
-            backgroundColor: AppColors.primary,
-            radius: 15,
-            child: Image.network(
-              'https://cdn-icons-png.flaticon.com/128/1827/1827425.png',
-              color: AppColors.background,
-              scale: 7.5,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Welcome back,",
+                  style: AppTextStyles.caption.copyWith(
+                    color: isDark ? Colors.white60 : Colors.grey.shade600,
+                    fontSize: 14,
+                  ),
+                ),
+                Text(
+                  "$username 👋🏻",
+                  style: AppTextStyles.h6.copyWith(
+                    color: isDark ? Colors.white : Colors.black,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 18,
+                  ),
+                ),
+              ],
             ),
           ),
+
+          // Notification Icon
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: AppColors.primary,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primary.withOpacity(0.2),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                )
+              ],
+            ),
+            child: Center(
+              child: Image.network(
+                'https://cdn-icons-png.flaticon.com/128/1827/1827425.png',
+                color: AppColors.background,
+                scale: 7.5,
+              ),
+            ),
+          ),
+
           const SizedBox(width: 10),
-          const CircleAvatar(
-            radius: 15,
-            backgroundColor: AppColors.accent,
-            child: Icon(
-              Icons.menu,
-              color: AppColors.background,
-            ),
-          ),
         ],
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:buzzcab/common/widgets/colors/color.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -20,8 +21,8 @@ class Nextscreenbutton extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: isDarkMode
-              ? [const Color(0xFF211F96), const Color(0xFF211F96)]
-              : [const Color(0xFF211F96), const Color(0xFF211F96)],
+              ? [AppColors.primary,AppColors.primary]
+              : [AppColors.primary,AppColors.primary],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
         ),

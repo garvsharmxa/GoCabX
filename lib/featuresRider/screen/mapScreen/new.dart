@@ -39,7 +39,8 @@ class _MapScreenState extends State<MapScreen> {
           builder: (context) {
             return AlertDialog(
               title: const Text('Location Permission Denied'),
-              content: const Text('Please grant location permission in settings to use this feature.'),
+              content: const Text(
+                  'Please grant location permission in settings to use this feature.'),
               actions: [
                 TextButton(
                   onPressed: () {
@@ -66,7 +67,7 @@ class _MapScreenState extends State<MapScreen> {
         _mapController!.animateCamera(CameraUpdate.newCameraPosition(
           CameraPosition(
             target: _currentLocation,
-            zoom: 10.0,
+            zoom: 14.0,
           ),
         ));
 
@@ -76,7 +77,8 @@ class _MapScreenState extends State<MapScreen> {
           Marker(
             markerId: const MarkerId('current_location'),
             position: _currentLocation,
-            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue), // Icon for live location
+            icon: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueBlue), // Icon for live location
           ),
         );
       }
@@ -167,198 +169,203 @@ class _MapScreenState extends State<MapScreen> {
       appBar: AppBar(title: const Text('Map Screen')),
       body: _mapReady
           ? Stack(
-        children: [
-          GoogleMap(
-            onMapCreated: (controller) {
-              _mapController = controller;
-            },
-            onTap: _polygonDrawingMode ? _onMapTap : null,
-            markers: _markers,
-            polygons: _polygons,
-            mapType: _mapTypes[_selectedMapType]!,
-            initialCameraPosition: const CameraPosition(
-              target: LatLng(0, 0),
-              zoom: 10.0,
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(top: 16),
-            child: Stack(
               children: [
-                Positioned(
-                  top: 0,
-                  left: 16,
-                  right: 150,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          spreadRadius: 1,
-                          blurRadius: 5,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextFormField(
-                              controller: _searchController,
-                              decoration: const InputDecoration(
-                                hintText: 'Search location...',
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.zero,
-                              ),
-                            ),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.search),
-                            onPressed: _searchLocation,
-                          ),
-                        ],
-                      ),
-                    ),
+                GoogleMap(
+                  onMapCreated: (controller) {
+                    _mapController = controller;
+                  },
+                  onTap: _polygonDrawingMode ? _onMapTap : null,
+                  markers: _markers,
+                  polygons: _polygons,
+                  mapType: _mapTypes[_selectedMapType]!,
+                  initialCameraPosition: const CameraPosition(
+                    target: LatLng(0, 0),
+                    zoom: 14.0,
                   ),
                 ),
-                Positioned(
-                  top: 0,
-                  right: 16,
+                Container(
+                  margin: const EdgeInsets.only(top: 16),
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        top: 0,
+                        left: 16,
+                        right: 150,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.3),
+                                spreadRadius: 1,
+                                blurRadius: 5,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: TextFormField(
+                                    controller: _searchController,
+                                    decoration: const InputDecoration(
+                                      hintText: 'Search location...',
+                                      border: InputBorder.none,
+                                      contentPadding: EdgeInsets.zero,
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.search),
+                                  onPressed: _searchLocation,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 0,
+                        right: 16,
+                        child: Container(
+                          width: 100,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.3),
+                                spreadRadius: 1,
+                                blurRadius: 5,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: DropdownButton<String>(
+                              value: _selectedMapType,
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  _selectedMapType = newValue!;
+                                });
+                              },
+                              items:
+                                  _mapTypes.keys.map<DropdownMenuItem<String>>(
+                                (String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                },
+                              ).toList(),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Visibility(
+                  visible: false,
                   child: Container(
-                    width: 100,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          spreadRadius: 1,
-                          blurRadius: 5,
-                          offset: const Offset(0, 3),
+                    margin: const EdgeInsets.only(bottom: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _polygonDrawingMode = !_polygonDrawingMode;
+                              if (!_polygonDrawingMode) {
+                                _polygonPoints.clear();
+                                _markers.clear();
+                              }
+                            });
+                          },
+                          child: Text(
+                              _polygonDrawingMode ? 'Cancel' : 'Add Polygon'),
+                        ),
+                        const SizedBox(width: 16),
+                        ElevatedButton(
+                          onPressed: null, // No action for this button
+                          child: DropdownButton<String>(
+                            value: 'none',
+                            onChanged: (String? newValue) {
+                              if (newValue == 'add') {
+                                // Add Polygon action
+                                setState(() {
+                                  _polygonDrawingMode = true;
+                                  _polygonPoints.clear();
+                                  _markers.clear();
+                                });
+                              } else if (newValue == 'remove') {
+                                // Remove Polygon action
+                                setState(() {
+                                  _polygons.removeWhere((polygon) =>
+                                      polygon.points == _polygonPoints);
+                                  _markers.removeWhere((marker) =>
+                                      _polygonPoints.contains(marker.position));
+                                  _polygonPoints.clear();
+                                });
+                              }
+                            },
+                            items: const [
+                              DropdownMenuItem<String>(
+                                value: 'none',
+                                child: Text('Select an action'),
+                              ),
+                              DropdownMenuItem<String>(
+                                value: 'add',
+                                child: Text('Add Polygon'),
+                              ),
+                              DropdownMenuItem<String>(
+                                value: 'remove',
+                                child: Text('Remove Polygon'),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: DropdownButton<String>(
-                        value: _selectedMapType,
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            _selectedMapType = newValue!;
-                          });
-                        },
-                        items: _mapTypes.keys.map<DropdownMenuItem<String>>(
-                              (String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          },
-                        ).toList(),
-                      ),
                     ),
                   ),
                 ),
               ],
-            ),
-          ),
-          Visibility(
-            visible: false,
-            child: Container(
-              margin: const EdgeInsets.only(bottom: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _polygonDrawingMode = !_polygonDrawingMode;
-                        if (!_polygonDrawingMode) {
-                          _polygonPoints.clear();
-                          _markers.clear();
-                        }
-                      });
-                    },
-                    child: Text(_polygonDrawingMode ? 'Cancel' : 'Add Polygon'),
-                  ),
-                  const SizedBox(width: 16),
-                  ElevatedButton(
-                    onPressed: null, // No action for this button
-                    child: DropdownButton<String>(
-                      value: 'none',
-                      onChanged: (String? newValue) {
-                        if (newValue == 'add') {
-                          // Add Polygon action
-                          setState(() {
-                            _polygonDrawingMode = true;
-                            _polygonPoints.clear();
-                            _markers.clear();
-                          });
-                        } else if (newValue == 'remove') {
-                          // Remove Polygon action
-                          setState(() {
-                            _polygons.removeWhere((polygon) => polygon.points == _polygonPoints);
-                            _markers.removeWhere((marker) => _polygonPoints.contains(marker.position));
-                            _polygonPoints.clear();
-                          });
-                        }
-                      },
-                      items: const [
-                        DropdownMenuItem<String>(
-                          value: 'none',
-                          child: Text('Select an action'),
-                        ),
-                        DropdownMenuItem<String>(
-                          value: 'add',
-                          child: Text('Add Polygon'),
-                        ),
-                        DropdownMenuItem<String>(
-                          value: 'remove',
-                          child: Text('Remove Polygon'),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      )
+            )
           : const Center(
-        child: CircularProgressIndicator(),
-      ),
+              child: CircularProgressIndicator(),
+            ),
       floatingActionButton: _mapReady
           ? FloatingActionButton(
-        onPressed: () {
-          // Add a marker at the current location
-          _markers.add(
-            Marker(
-              markerId: const MarkerId('my_location_marker'),
-              position: _currentLocation,
-              infoWindow: const InfoWindow(
-                title: 'My Location',
-              ),
-            ),
-          );
-          setState(() {});
+              onPressed: () {
+                // Add a marker at the current location
+                _markers.add(
+                  Marker(
+                    markerId: const MarkerId('my_location_marker'),
+                    position: _currentLocation,
+                    infoWindow: const InfoWindow(
+                      title: 'My Location',
+                    ),
+                  ),
+                );
+                setState(() {});
 
-          // Move the camera to the current location
-          _mapController?.animateCamera(
-            CameraUpdate.newCameraPosition(
-              CameraPosition(
-                target: _currentLocation,
-                zoom: 15.0,
-              ),
-            ),
-          );
-        },
-        child: const Icon(Icons.my_location),
-      )
+                // Move the camera to the current location
+                _mapController?.animateCamera(
+                  CameraUpdate.newCameraPosition(
+                    CameraPosition(
+                      target: _currentLocation,
+                      zoom: 15.0,
+                    ),
+                  ),
+                );
+              },
+              child: const Icon(Icons.my_location),
+            )
           : null, // Hide the button until the map is ready
     );
   }

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:buzzcab/common/widgets/colors/color.dart';
 import 'package:buzzcab/featuresRider/bottomNavigation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -9,14 +10,20 @@ import '../../../../featuresDriver/home/widgets/nextScreenButton.dart';
 class RideOngoingScreen extends StatefulWidget {
   final LatLng LocationA;
   final LatLng LocationB;
-  const RideOngoingScreen({super.key, required this.LocationA, required this.LocationB});
+  const RideOngoingScreen(
+      {super.key, required this.LocationA, required this.LocationB});
 
   @override
   State<RideOngoingScreen> createState() => _RideOngoingScreenState();
 }
 
-class _RideOngoingScreenState extends State<RideOngoingScreen> {
+class _RideOngoingScreenState extends State<RideOngoingScreen>
+    with TickerProviderStateMixin {
   final Completer<GoogleMapController> _mapController = Completer();
+  late AnimationController _pulseController;
+  late AnimationController _slideController;
+  late Animation<double> _pulseAnimation;
+  late Animation<Offset> _slideAnimation;
 
   List<LatLng> _routeCoordinates = [];
   int _currentIndex = 0;
@@ -26,15 +33,40 @@ class _RideOngoingScreenState extends State<RideOngoingScreen> {
   final String googleApiKey = "AIzaSyB_BCq0oZsuBcUYWs_yS2RlRaKTJL2-5XM";
   late LatLng locationA;
   late LatLng locationB;
+  String pickupAddress = '';
+  String dropAddress = '';
 
   @override
   void initState() {
     super.initState();
     locationA = widget.LocationA;
     locationB = widget.LocationB;
-    _fetchRoute();
-  }
 
+    _pulseController = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..repeat(reverse: true);
+
+    _slideController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+
+    _pulseAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.3),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(parent: _slideController, curve: Curves.elasticOut),
+    );
+
+    _fetchRoute();
+    _getAddressFromLatLng();
+    _slideController.forward();
+  }
 
   Future<void> _fetchRoute() async {
     final String url =
@@ -53,6 +85,40 @@ class _RideOngoingScreenState extends State<RideOngoingScreen> {
       print("Error fetching route: ${response.body}");
     }
   }
+
+  Future<void> _getAddressFromLatLng() async {
+    final pickupUrl =
+        "https://maps.googleapis.com/maps/api/geocode/json?latlng=${locationA.latitude},${locationA.longitude}&key=$googleApiKey";
+    final dropUrl =
+        "https://maps.googleapis.com/maps/api/geocode/json?latlng=${locationB.latitude},${locationB.longitude}&key=$googleApiKey";
+
+    try {
+      final pickupResponse = await http.get(Uri.parse(pickupUrl));
+      final dropResponse = await http.get(Uri.parse(dropUrl));
+
+      print("Pickup Response: ${pickupResponse.body}");
+      print("Drop Response: ${dropResponse.body}");
+
+      if (pickupResponse.statusCode == 200 && dropResponse.statusCode == 200) {
+        final pickupData = json.decode(pickupResponse.body);
+        final dropData = json.decode(dropResponse.body);
+
+        if (pickupData["status"] == "OK" && dropData["status"] == "OK") {
+          setState(() {
+            pickupAddress = pickupData["results"][0]["formatted_address"];
+            dropAddress = dropData["results"][0]["formatted_address"];
+          });
+        } else {
+          print("Geocoding failed: ${pickupData["status"]}, ${dropData["status"]}");
+        }
+      } else {
+        print("Error fetching address: HTTP error");
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
 
   List<LatLng> _decodePolyline(String encoded) {
     List<LatLng> points = [];
@@ -101,17 +167,15 @@ class _RideOngoingScreenState extends State<RideOngoingScreen> {
       Polyline(
         polylineId: const PolylineId("route_border"),
         points: _routeCoordinates,
-        color: const Color(0xffCBCAE2),
-        width: 9, // Slightly larger than the main polyline
+        color:  AppColors.primary.withOpacity(0.3),
+        width: 12,
         jointType: JointType.round,
       ),
-
-      // Inner main blue polyline
       Polyline(
         polylineId: const PolylineId("route"),
         points: _routeCoordinates,
-        color: const Color(0xff211F96), // Main polyline color
-        width: 5, // Slightly smaller than the border
+        color:  AppColors.primary.withOpacity(0.8),
+        width: 6,
         jointType: JointType.round,
       ),
     };
@@ -153,6 +217,8 @@ class _RideOngoingScreenState extends State<RideOngoingScreen> {
   @override
   void dispose() {
     _trackingTimer?.cancel();
+    _pulseController.dispose();
+    _slideController.dispose();
     super.dispose();
   }
 
@@ -160,340 +226,372 @@ class _RideOngoingScreenState extends State<RideOngoingScreen> {
   Widget build(BuildContext context) {
     final isDarkMode =
         MediaQuery.of(context).platformBrightness == Brightness.dark;
-    final Color backgroundColor = isDarkMode ? Colors.black : Colors.white;
-    final Color textColor = isDarkMode ? Colors.white : Colors.black;
-    Size size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: backgroundColor,
-      appBar: AppBar(
-        backgroundColor: backgroundColor,
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () {},
-          icon: Icon(Icons.arrow_back, color: textColor),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      backgroundColor:
+          isDarkMode ? const Color(0xFF1A1A1A) : const Color(0xFFF8F9FA),
+      body: SafeArea(
+        child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Your Ride is almost done.",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    color: textColor),
-              ),
-              const SizedBox(height: 8),
-              RichText(
-                maxLines: 2,
-                text: TextSpan(
-                  style: TextStyle(
-                      color: textColor, fontSize: 16), // Default style
-                  children: [
-                    const TextSpan(text: "You're on your way to "),
-                    const TextSpan(
-                      text: "Chandigarh University.",
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(5),
-                child: Container(
-                  height: 300,
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 3, color: Colors.transparent),
-                    borderRadius: BorderRadius.circular(5),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        spreadRadius: 2,
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
+              // Header Section with Gradient
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.primary,
+                      AppColors.secondary,
                     ],
                   ),
-                  child: GoogleMap(
-                    onMapCreated: (GoogleMapController controller) {
-                      if (!_mapController.isCompleted) {
-                        _mapController.complete(controller);
-                      }
-                    },
-                    initialCameraPosition:
-                        CameraPosition(target: locationA, zoom: 14),
-                    markers: _markers,
-                    polylines: _polylines,
-                    myLocationEnabled: false,
-                    myLocationButtonEnabled: false,
-                    zoomControlsEnabled: false,
-                  ),
                 ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 6,
-                      spreadRadius: 2,
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundImage: AssetImage(
-                              'assets/images/content/IMG_5195.png'), // Update image
-                        ),
-                        SizedBox(width: 12),
-                        Text(
-                          "Garv Sharma",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Divider(height: 20, thickness: 1),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _infoTile(Icons.directions_car, "Hyundai i10"),
-                        _infoTile(Icons.credit_card, "MH 12 AB 3456"),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _infoTile(Icons.star, "4.8"),
-                        _infoTile(Icons.diamond, "300 Rides Done"),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Container(
-                height: size.height * 0.36,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Colors.teal[50], // Light background color
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Pickup & Drop-off Details
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Row(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
                         children: [
-                          // Pickup Details
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      height: 30,
-                                      width: 30,
-                                      decoration: BoxDecoration(
-                                          color: Colors.teal,
-                                          borderRadius:
-                                              BorderRadius.circular(5)),
-                                      child: const Center(
-                                        child: Icon(Icons.location_on,
-                                            color: Colors.white),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 6),
-                                    const Text("Pickup Location",
-                                        style: TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500)),
-                                  ],
-                                ),
-                                const SizedBox(height: 4),
-                                const Text(
-                                  "Cannaught Palace, 123 abc Mall, New Delhi, 012345",
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                      fontSize: 14, color: Colors.black87),
-                                ),
-                              ],
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Icon(
+                              Icons.navigation,
+                              color: Colors.white,
+                              size: 24,
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            child: Container(
-                              height: size.height * 0.1,
-                              width: 1.5,
-                              color: Colors.grey[400],
-                            ),
-                          ),
-                          // Drop-off Details
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      height: 30,
-                                      width: 30,
-                                      decoration: BoxDecoration(
-                                          gradient: LinearGradient(
-                                            colors: isDarkMode
-                                                ? [
-                                                    const Color(0xFF211F96),
-                                                    const Color(0xFF211F96)
-                                                  ]
-                                                : [
-                                                    const Color(0xFF211F96),
-                                                    const Color(0xFF211F96)
-                                                  ],
-                                            begin: Alignment.centerLeft,
-                                            end: Alignment.centerRight,
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(5)),
-                                      child: const Center(
-                                        child: Icon(Icons.location_on,
-                                            color: Colors.white),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 6),
-                                    const Text("Drop-off",
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.grey)),
-                                  ],
-                                ),
-                                const SizedBox(height: 4),
-                                const Text(
-                                  "Chandni Chowk, New Delhi, 054321",
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                      fontSize: 14, color: Colors.black87),
-                                ),
-                              ],
+                          const SizedBox(width: 12),
+                          const Expanded(
+                            child: Text(
+                              "Ride in Progress",
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ],
                       ),
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    // OTP Section
-                    const Text(
-                      "Your OTP for Ride",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 8),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: List.generate(4, (index) {
-                        return Container(
-                          width: 50,
-                          height: 50,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
-                                  blurRadius: 4,
-                                  spreadRadius: 1)
-                            ],
-                          ),
-                          child: Text(
-                            ["1", "2", "3", "9"][index], // Sample OTP
-                            style: const TextStyle(
-                                fontSize: 22, fontWeight: FontWeight.bold),
-                          ),
-                        );
-                      }),
-                    ),
-
-                    const SizedBox(height: 8),
-                    Text(
-                      "*Share this OTP with your driver to start the ride.",
-                      style: TextStyle(fontSize: 12, color: Colors.teal[700]),
-                    ),
-
-                    const SizedBox(
-                      height: 10,
-                    ),
-
-                    // Bottom Ride Status
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Arriving Drop Location in 10 Mins",
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                      const SizedBox(height: 12),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                        Icon(Icons.directions_car,
-                            color: Colors.teal, size: 32),
-                      ],
-                    ),
-                  ],
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            AnimatedBuilder(
+                              animation: _pulseAnimation,
+                              builder: (context, child) {
+                                return Transform.scale(
+                                  scale: _pulseAnimation.value,
+                                  child: Container(
+                                    width: 8,
+                                    height: 8,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.greenAccent,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            const SizedBox(width: 8),
+                            const Text(
+                              "Arriving at Chandigarh University",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              const SizedBox(
-                height: 15,
+
+              // Map Section
+              Padding(
+                padding: const EdgeInsets.all(0),
+                child: SlideTransition(
+                  position: _slideAnimation,
+                  child: Container(
+                    height: 380,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 20,
+                          spreadRadius: 0,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: GoogleMap(
+                        onMapCreated: (GoogleMapController controller) {
+                          if (!_mapController.isCompleted) {
+                            _mapController.complete(controller);
+                          }
+                        },
+                        initialCameraPosition:
+                            CameraPosition(target: locationA, zoom: 14),
+                        markers: _markers,
+                        polylines: _polylines,
+                        myLocationEnabled: false,
+                        myLocationButtonEnabled: false,
+                        zoomControlsEnabled: false,
+                        mapToolbarEnabled: false,
+                      ),
+                    ),
+                  ),
+                ),
               ),
-              Nextscreenbutton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const RiderNavigationMenu()));
-                },
-                buttonText: 'MAKE PAYMENT ₹150',
+
+              SizedBox(
+                height: 10,
               ),
-              const SizedBox(
-                height: 25,
+              // Driver Info Card
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: isDarkMode ? const Color(0xFF2A2A2A) : Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.08),
+                        blurRadius: 20,
+                        spreadRadius: 0,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(3),
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [
+                                  AppColors.primary,
+                                  AppColors.secondary,
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            child: const CircleAvatar(
+                              radius: 32,
+                              backgroundImage: AssetImage(
+                                  'assets/images/content/IMG_5195.png'),
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Garv Sharma",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: isDarkMode
+                                        ? Colors.white
+                                        : Colors.black,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.star,
+                                      color: Colors.amber,
+                                      size: 16,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      "4.8 • 300 rides",
+                                      style: TextStyle(
+                                        color: Colors.grey[600],
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: AppColors.primary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Icon(
+                              Icons.phone,
+                              color: AppColors.primary,
+                              size: 24,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color:AppColors.primary.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _buildInfoChip(Icons.directions_car, "Hyundai i10",
+                                isDarkMode),
+                            _buildInfoChip(Icons.confirmation_number,
+                                "MH 12 AB 3456", isDarkMode),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
+
+              const SizedBox(height: 16),
+
+              // Trip Details Card
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: isDarkMode ? const Color(0xFF2A2A2A) : Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.08),
+                        blurRadius: 20,
+                        spreadRadius: 0,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Trip Details",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: isDarkMode ? Colors.white : Colors.black,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      _buildLocationRow(
+                        Icons.trip_origin,
+                        "Pickup Location",
+                        pickupAddress.isNotEmpty
+                            ? pickupAddress
+                            : "Fetching pickup location...",
+                        const Color(0xff10B981),
+                        isDarkMode,
+                      ),
+                      const SizedBox(height: 16),
+                      _buildLocationRow(
+                        Icons.location_on,
+                        "Drop-off Location",
+                        dropAddress.isNotEmpty
+                            ? dropAddress
+                            : "Fetching drop location...",
+                        const Color(0xffF59E0B),
+                        isDarkMode,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // Payment Button
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Container(
+                  width: double.infinity,
+                  height: 56,
+                  decoration: BoxDecoration(
+                   color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xff6C63FF).withOpacity(0.3),
+                        blurRadius: 12,
+                        spreadRadius: 0,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
+                  ),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const RiderNavigationMenu(),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.payment,
+                          color: Colors.white,
+                          size: 24,
+                        ),
+                        SizedBox(width: 12),
+                        Text(
+                          "MAKE PAYMENT ₹150",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 32),
             ],
           ),
         ),
@@ -501,12 +599,79 @@ class _RideOngoingScreenState extends State<RideOngoingScreen> {
     );
   }
 
-  Widget _infoTile(IconData icon, String text) {
+  Widget _buildInfoChip(IconData icon, String text, bool isDarkMode) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: Colors.grey.withOpacity(0.2),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            color: const Color(0xff6C63FF),
+            size: 16,
+          ),
+          const SizedBox(width: 6),
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: isDarkMode ? Colors.black : Colors.black87,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLocationRow(IconData icon, String title, String address,
+      Color color, bool isDarkMode) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: Colors.indigo),
-        const SizedBox(width: 6),
-        Text(text, style: const TextStyle(fontSize: 16)),
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(
+            icon,
+            color: color,
+            size: 20,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey[600],
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                address,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: isDarkMode ? Colors.white : Colors.black87,
+                ),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }

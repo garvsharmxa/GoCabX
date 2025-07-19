@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
-
 import '../../../featuresDriver/utils/constants/colors.dart';
-import '../../../featuresDriver/utils/helpers/helper_functions.dart';
+import '../../../utils/helpers/helper_functions.dart';
 
 class TShimmerEffect extends StatelessWidget {
   const TShimmerEffect({

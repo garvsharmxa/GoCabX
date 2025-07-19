@@ -210,7 +210,7 @@ class SearchCard extends StatelessWidget {
                 onMapCreated: onMapCreated,
                 initialCameraPosition: CameraPosition(
                   target: center,
-                  zoom: 11.0,
+                  zoom: 14.0,
                 ),
               ),
             ),

@@ -24,7 +24,7 @@ class SavedAddressesController extends GetxController {
   void onInit() {
     super.onInit();
     loadSavedLocation();
-    useCurrentLocation();
+    // Don't call useCurrentLocation() in onInit to avoid automatic permission request
   }
 
   /// **Set a marker at the given position**
@@ -39,19 +39,84 @@ class SavedAddressesController extends GetxController {
     );
   }
 
-  /// **Fetch and update the user's current location**
+  /// **Fetch and update the user's current location with proper error handling**
   Future<void> useCurrentLocation() async {
+    if (isLoading.value) return; // Prevent multiple simultaneous calls
+
     isLoading.value = true;
+
     try {
       Location location = Location();
-      var userLocation = await location.getLocation();
-      LatLng newLocation = LatLng(userLocation.latitude!, userLocation.longitude!);
 
-      updateLocation(newLocation);
+      // Check if location service is enabled
+      bool serviceEnabled = await location.serviceEnabled();
+      if (!serviceEnabled) {
+        serviceEnabled = await location.requestService();
+        if (!serviceEnabled) {
+          _showLocationError(
+              "Location service is disabled. Please enable it in settings.");
+          return;
+        }
+      }
+
+      // Check location permission
+      PermissionStatus permissionGranted = await location.hasPermission();
+      if (permissionGranted == PermissionStatus.denied) {
+        permissionGranted = await location.requestPermission();
+        if (permissionGranted != PermissionStatus.granted) {
+          _showLocationError(
+              "Location permission denied. Please grant permission in settings.");
+          return;
+        }
+      }
+
+      // Set timeout for location request
+      LocationData userLocation = await location.getLocation().timeout(
+        const Duration(seconds: 15),
+        onTimeout: () {
+          throw TimeoutException(
+              'Location request timed out', const Duration(seconds: 15));
+        },
+      );
+
+      if (userLocation.latitude != null && userLocation.longitude != null) {
+        LatLng newLocation =
+            LatLng(userLocation.latitude!, userLocation.longitude!);
+        await updateLocation(newLocation);
+
+        Get.snackbar(
+          "Success",
+          "Current location updated successfully!",
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.green.withOpacity(0.8),
+          colorText: Colors.white,
+          duration: const Duration(seconds: 2),
+        );
+      } else {
+        _showLocationError("Unable to get current location. Please try again.");
+      }
+    } on TimeoutException catch (e) {
+      print("Location timeout: $e");
+      _showLocationError("Location request timed out. Please try again.");
     } catch (e) {
       print("Error getting current location: $e");
+      _showLocationError("Failed to get current location: ${e.toString()}");
+    } finally {
+      isLoading.value = false;
     }
+  }
+
+  /// **Show location error message**
+  void _showLocationError(String message) {
     isLoading.value = false;
+    Get.snackbar(
+      "Location Error",
+      message,
+      snackPosition: SnackPosition.TOP,
+      backgroundColor: Colors.red.withOpacity(0.8),
+      colorText: Colors.white,
+      duration: const Duration(seconds: 4),
+    );
   }
 
   /// **Update location, marker, and address**
@@ -61,18 +126,42 @@ class SavedAddressesController extends GetxController {
     await getAddressFromLatLng(position);
     await saveLocation(position);
 
-    final GoogleMapController controller = await mapController.future;
-    controller.animateCamera(CameraUpdate.newLatLng(position));
+    // Only animate camera if mapController is ready and completed
+    try {
+      if (mapController.isCompleted) {
+        final GoogleMapController controller = await mapController.future;
+        await controller.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(target: position, zoom: 15),
+          ),
+        );
+      }
+    } catch (e) {
+      print("Error animating camera: $e");
+    }
   }
 
   /// **Convert LatLng coordinates to an address string**
   Future<void> getAddressFromLatLng(LatLng position) async {
     try {
-      List<geo.Placemark> placemarks = await geo.placemarkFromCoordinates(position.latitude, position.longitude);
+      List<geo.Placemark> placemarks = await geo
+          .placemarkFromCoordinates(position.latitude, position.longitude)
+          .timeout(
+            const Duration(seconds: 10),
+            onTimeout: () => throw TimeoutException(
+                'Geocoding timeout', const Duration(seconds: 10)),
+          );
+
       if (placemarks.isNotEmpty) {
         geo.Placemark place = placemarks.first;
-        selectedAddress.value = "${place.name}, ${place.locality}, ${place.administrativeArea}, ${place.country}";
+        selectedAddress.value =
+            "${place.name ?? ''}, ${place.locality ?? ''}, ${place.administrativeArea ?? ''}, ${place.country ?? ''}";
+      } else {
+        selectedAddress.value = "Address not found";
       }
+    } on TimeoutException catch (e) {
+      print("Geocoding timeout: $e");
+      selectedAddress.value = "Address lookup timed out";
     } catch (e) {
       print("Error getting address: $e");
       selectedAddress.value = "Unable to fetch address";
@@ -80,7 +169,8 @@ class SavedAddressesController extends GetxController {
   }
 
   /// **Save location along with title, address, and phone number**
-  Future<void> saveLocationWithDetails(String title, String address, String phoneNumber) async {
+  Future<void> saveLocationWithDetails(
+      String title, String address, String phoneNumber) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('saved_title', title);
@@ -106,22 +196,27 @@ class SavedAddressesController extends GetxController {
     }
   }
 
-
   /// **Fetch place suggestions based on user input**
   Future<void> fetchSuggestions(String input) async {
     if (input.isEmpty) {
       suggestions.clear();
       return;
     }
-    final String url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&key=$googleApiKey&components=country:in";
+
+    final String url =
+        "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&key=$googleApiKey&components=country:in";
 
     try {
-      final response = await http.get(Uri.parse(url));
+      final response = await http.get(Uri.parse(url)).timeout(
+            const Duration(seconds: 10),
+          );
+
       final jsonData = json.decode(response.body);
       if (jsonData["status"] == "OK") {
         suggestions.value = jsonData["predictions"];
       } else {
         suggestions.clear();
+        print("Places API error: ${jsonData["status"]}");
       }
     } catch (e) {
       print("Error fetching place suggestions: $e");
@@ -135,12 +230,17 @@ class SavedAddressesController extends GetxController {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       double? lat = prefs.getDouble('latitude');
       double? lng = prefs.getDouble('longitude');
+
       if (lat != null && lng != null) {
         LatLng savedLocation = LatLng(lat, lng);
-        updateLocation(savedLocation);
+        await updateLocation(savedLocation);
+      } else {
+        // Set default location if no saved location exists
+        selectedAddress.value = "Tap to select location";
       }
     } catch (e) {
       print("Error loading saved location: $e");
+      selectedAddress.value = "Tap to select location";
     }
   }
 
@@ -157,10 +257,14 @@ class SavedAddressesController extends GetxController {
 
   /// **Select a location from search suggestions**
   Future<void> selectLocation(String placeId) async {
-    final String url = "https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$googleApiKey";
+    final String url =
+        "https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$googleApiKey";
 
     try {
-      final response = await http.get(Uri.parse(url));
+      final response = await http.get(Uri.parse(url)).timeout(
+            const Duration(seconds: 10),
+          );
+
       final jsonData = json.decode(response.body);
 
       if (jsonData["status"] == "OK") {
@@ -168,8 +272,11 @@ class SavedAddressesController extends GetxController {
         double lng = jsonData["result"]["geometry"]["location"]["lng"];
         LatLng newLocation = LatLng(lat, lng);
 
-        updateLocation(newLocation);
+        await updateLocation(newLocation);
         suggestions.clear();
+        searchController.clear();
+      } else {
+        print("Place details API error: ${jsonData["status"]}");
       }
     } catch (e) {
       print("Error selecting location: $e");
@@ -178,7 +285,10 @@ class SavedAddressesController extends GetxController {
 
   /// **Confirm selected location and notify the user**
   void confirmLocation() {
-    if (selectedAddress.value.isNotEmpty && selectedMarker.value != null) {
+    if (selectedAddress.value.isNotEmpty &&
+        selectedAddress.value != "Fetching address..." &&
+        selectedAddress.value != "Tap to select location" &&
+        selectedMarker.value != null) {
       Get.snackbar(
         "Location Confirmed",
         "Your delivery location has been set to: ${selectedAddress.value}",
@@ -186,8 +296,6 @@ class SavedAddressesController extends GetxController {
         backgroundColor: Colors.green,
         colorText: Colors.white,
       );
-      // Optionally navigate back after confirming
-      // Get.back();
     } else {
       Get.snackbar(
         "Error",
@@ -197,5 +305,11 @@ class SavedAddressesController extends GetxController {
         colorText: Colors.white,
       );
     }
+  }
+
+  @override
+  void onClose() {
+    searchController.dispose();
+    super.onClose();
   }
 }

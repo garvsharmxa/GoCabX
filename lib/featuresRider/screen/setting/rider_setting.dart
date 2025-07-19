@@ -17,7 +17,7 @@ class _RiderSettingState extends State<RiderSetting> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final Color textColor = isDark ? Colors.white : Colors.black;
     final Color backgroundColor =
-        isDark ? const Color(0xFF121212) : Colors.white;
+    isDark ? const Color(0xFF121212) : Colors.white;
     final Color iconBgColor = isDark ? Color(0xff262626) : Color(0xff212121);
     const Color iconColor = Colors.white;
 
@@ -45,12 +45,13 @@ class _RiderSettingState extends State<RiderSetting> {
                 children: [
                   const SizedBox(width: 20),
                   Container(
-                    height: 60,
-                    width: 60,
+                    height: 70,
+                    width: 70,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(50),
                       image: const DecorationImage(
-                        image: AssetImage("assets/images/content/profile.png"),
+                        image: NetworkImage(
+                            "https://garvsharmxa.netlify.app/assets/mypr-modified.png"),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -60,7 +61,7 @@ class _RiderSettingState extends State<RiderSetting> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "John Doe", // Replace with the actual name
+                        "Garv Sharma", // Replace with the actual name
                         style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.w700,
@@ -100,7 +101,7 @@ class _RiderSettingState extends State<RiderSetting> {
                   iconColor, iconBgColor,
                   onTap: () {}),
               _buildSwitchTile(Icons.notifications, "Push Notifications", true,
-                  (value) {}, textColor, iconColor, iconBgColor),
+                      (value) {}, textColor, iconColor, iconBgColor),
               Padding(
                 padding: const EdgeInsets.only(left: 15.0, right: 15),
                 child: const Divider(),
@@ -182,14 +183,14 @@ class _RiderSettingState extends State<RiderSetting> {
   }
 
   Widget _buildSwitchTile(
-    IconData icon,
-    String title,
-    bool value,
-    Function(bool) onChanged,
-    Color textColor,
-    Color iconColor,
-    Color iconBgColor,
-  ) {
+      IconData icon,
+      String title,
+      bool value,
+      Function(bool) onChanged,
+      Color textColor,
+      Color iconColor,
+      Color iconBgColor,
+      ) {
     return ListTile(
       leading: _buildIconContainer(icon, iconColor, iconBgColor),
       title: Text(title, style: TextStyle(color: textColor)),
@@ -206,7 +207,7 @@ class _RiderSettingState extends State<RiderSetting> {
       Color textColor, Color iconColor, Color iconBgColor) {
     return ListTile(
       leading:
-          _buildIconContainer(Icons.directions_car, iconColor, iconBgColor),
+      _buildIconContainer(Icons.directions_car, iconColor, iconBgColor),
       title: Text("Vehicle Type", style: TextStyle(color: textColor)),
       trailing: DropdownButton<String>(
         value: selectedVehicle,
@@ -238,3 +239,4 @@ class _RiderSettingState extends State<RiderSetting> {
     );
   }
 }
+
